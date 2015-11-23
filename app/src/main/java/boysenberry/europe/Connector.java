@@ -1,6 +1,11 @@
 package boysenberry.europe;
 
 import android.os.AsyncTask;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +17,12 @@ import java.net.URL;
  * Created by Hassan on 23/11/2015.
  */
 public class Connector extends AsyncTask<String, Void, String> {
+    private String result;
+
+    public Connector (){
+        result = null;
+        execute("http://api.worldbank.org/country?per_page=100&region=EUU&format=json");
+    }
     @Override
     protected String doInBackground(String... urls){
         StringBuffer buffer = new StringBuffer();
@@ -33,6 +44,26 @@ public class Connector extends AsyncTask<String, Void, String> {
         } catch (IOException e){
             e.printStackTrace();
         }
+        result = buffer.toString();
+
+        try {
+            JSONArray jsArray = new JSONArray(result);
+            JSONObject jsObject = jsArray.getJSONObject(0);
+            JSONArray jsData = jsArray.getJSONArray(1);
+
+            for(int i=0; i < jsData.length() ; i++) {
+
+                JSONObject jObject = jsData.getJSONObject(i);
+
+                String name = jObject.getString("name");
+                Log.i("tag",name);
+
+            } // End Loop
+        } catch (JSONException e) {
+            Log.e("JSONException", "Error: " + e.toString());
+        }
+
         return(buffer.toString());
     }
+
 }
