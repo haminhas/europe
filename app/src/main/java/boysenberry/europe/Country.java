@@ -25,4 +25,8 @@ public class Country {
     public String getCapital(){
         return capital;
     }
+
+    public String toString(){
+        return ID +"," +name+"," +capital;
+    }
 }
