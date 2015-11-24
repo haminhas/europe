@@ -12,14 +12,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Created by Hassan on 23/11/2015.
  */
 public class Connector extends AsyncTask<String, Void, String> {
     private String result;
+    private ArrayList<String> alldata;
 
     public Connector (){
+        alldata = new ArrayList<String>();
         result = null;
         execute("http://api.worldbank.org/country?per_page=100&region=EUU&format=json");
     }
@@ -44,26 +47,40 @@ public class Connector extends AsyncTask<String, Void, String> {
         } catch (IOException e){
             e.printStackTrace();
         }
+        json(buffer.toString());
         result = buffer.toString();
+        return(buffer.toString());
+    }
 
+    private void json(String s){
         try {
-            JSONArray jsArray = new JSONArray(result);
+            JSONArray jsArray = new JSONArray(s);
             JSONObject jsObject = jsArray.getJSONObject(0);
             JSONArray jsData = jsArray.getJSONArray(1);
 
             for(int i=0; i < jsData.length() ; i++) {
 
                 JSONObject jObject = jsData.getJSONObject(i);
+                String temp;
 
                 String name = jObject.getString("name");
-                Log.i("tag",name);
+                String capital = jObject.getString("capitalCity");
+                String latitude = jObject.getString("latitude");
+                String longitude = jObject.getString("longitude");
+                temp = name +","+capital+","+ latitude+","+ longitude;
+                alldata.add(temp);
+                Log.i("tag",temp);
 
             } // End Loop
         } catch (JSONException e) {
             Log.e("JSONException", "Error: " + e.toString());
         }
-
-        return(buffer.toString());
     }
+
+    public ArrayList<String> getData(){
+        return alldata;
+    }
+
+
 
 }
