@@ -18,12 +18,9 @@ import java.util.ArrayList;
  * Created by Hassan on 23/11/2015.
  */
 public class Connector extends AsyncTask<String, Void, String> {
-    private String result;
-    private ArrayList<String> alldata;
+    private Countries c = new Countries();
 
     public Connector (){
-        alldata = new ArrayList<String>();
-        result = null;
         execute("http://api.worldbank.org/country?per_page=100&region=EUU&format=json");
     }
     @Override
@@ -48,7 +45,6 @@ public class Connector extends AsyncTask<String, Void, String> {
             e.printStackTrace();
         }
         json(buffer.toString());
-        result = buffer.toString();
         return(buffer.toString());
     }
 
@@ -62,13 +58,12 @@ public class Connector extends AsyncTask<String, Void, String> {
 
                 JSONObject jObject = jsData.getJSONObject(i);
                 String temp;
-
+                String id = jObject.getString("id");
                 String name = jObject.getString("name");
                 String capital = jObject.getString("capitalCity");
-                String latitude = jObject.getString("latitude");
-                String longitude = jObject.getString("longitude");
-                temp = name +","+capital+","+ latitude+","+ longitude;
-                alldata.add(temp);
+                Country t =  new Country(id,name,capital);
+                c.add(t);
+                temp = name +","+capital;
                 Log.i("tag",temp);
 
             } // End Loop
@@ -76,11 +71,4 @@ public class Connector extends AsyncTask<String, Void, String> {
             Log.e("JSONException", "Error: " + e.toString());
         }
     }
-
-    public ArrayList<String> getData(){
-        return alldata;
-    }
-
-
-
 }
