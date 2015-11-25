@@ -22,16 +22,18 @@ public class Connector extends AsyncTask<String, Void, String> {
     private boolean first;
 
     public Connector (){
+
         first = true;
-        String s = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR?per_page=100&format=json";
-        String zz = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SL.EMP.TOTL.SP.FE.ZS?format=json&date=1990:2013&per_page=10000";
-        execute(s,zz);
+        String country = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR?per_page=100&format=json";
+        String female = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SL.EMP.TOTL.SP.FE.ZS?format=json&date=1990:2013&per_page=10000";
+        String population = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SP.POP.TOTL?format=json&date=1990%3A2013&per_page=10000";
+        execute(country,female,population);
     }
     @Override
     protected String doInBackground(String... urls){
-        StringBuffer buffer;
-        buffer = new StringBuffer();
-        for(int i = 0;i<2;i++) {
+        StringBuffer buffer = new StringBuffer();
+        String[] strings = new String[3];
+        for(int i = 0;i<3;i++) {
             buffer = new StringBuffer();
             try {
                 URL url = new URL(urls[i]);
@@ -48,23 +50,25 @@ public class Connector extends AsyncTask<String, Void, String> {
                 }
                 in.close();
                 connection.disconnect();
+                strings[i] = buffer.toString();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (first) {
-                json(buffer.toString());
-                first = false;
-            } else {
-                getFemaleWork(buffer.toString());
-            }
         }
+
+        Log.i("test","ID");
+        json(strings[0]);
+        Log.i("test","female");
+        getData(strings[1]);
+        Log.i("test","population");
+        getData(strings[2]);
+
         return (buffer.toString());
     }
 
     private void json(String s){
         try {
             JSONArray jsArray = new JSONArray(s);
-            JSONObject jsObject = jsArray.getJSONObject(0);
             JSONArray jsData = jsArray.getJSONArray(1);
 
             for(int i=0; i < jsData.length() ; i++) {
@@ -85,10 +89,9 @@ public class Connector extends AsyncTask<String, Void, String> {
         }
     }
 
-    private void getFemaleWork(String s){
+    private void getData(String s){
         try {
             JSONArray jsArray = new JSONArray(s);
-            JSONObject jsObject = jsArray.getJSONObject(0);
             JSONArray jsData = jsArray.getJSONArray(1);
 
             for(int i=0; i < jsData.length() ; i++) {
@@ -104,12 +107,21 @@ public class Connector extends AsyncTask<String, Void, String> {
                 String date = jObject.getString("date");
 
                 temp = value+","+ date;
-                for(Country j:c.getList()){
-                    if(j.getID().equals(id)){
-                        j.addFemalePercentage(temp);
+                if (first) {
+                    for (Country j : c.getList()) {
+                        if (j.getID().equals(id)) {
+                            j.addFemalePercentage(temp);
+                        }
+                    }
+                    first = false;
+                } else {
+                    for (Country j : c.getList()) {
+                        if (j.getID().equals(id)) {
+                            j.addPopulation(temp);
+                        }
                     }
                 }
-                //Log.i("test",id+","+temp);
+                Log.i("test",id+","+temp);
 
             } // End Loop
 
