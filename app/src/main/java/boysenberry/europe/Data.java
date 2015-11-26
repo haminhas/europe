@@ -1,6 +1,7 @@
 package boysenberry.europe;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -15,25 +16,27 @@ import java.io.InputStreamReader;
  */
 public class Data {
     private static Context context;
-    private static String data, filename = "europe_data";
+    private static String data;
     private static String result;
 
     /**
      * Saves given data to the running device internal storage
      *
-     * @param data - data represented as a String
+     * @param countryName - name of the country to be saved
+     * @param data        - data represented as a String
      */
-    public static void saveData(Context c, String data) {
+    public static void saveData(Context c, String countryName, String data) {
         context = c;
         Data.data = data;
-        writeToFile();          //calls a private method
+        writeToFile(countryName);          //calls a private method
     }
 
-    private static void writeToFile() {
+    private static void writeToFile(String filename) {
         try {
             FileOutputStream outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
             outputStream.write(data.getBytes());
             outputStream.close();
+            Log.i("SAVED DATA FOR COUNTRY:", filename);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,9 +45,9 @@ public class Data {
     /**
      * Retrieves the data stored in the device internal storage
      */
-    public static String getData() {
+    public static String getData(String countryName) {
         try {
-            FileInputStream inputStream = context.openFileInput(filename);
+            FileInputStream inputStream = context.openFileInput(countryName);
             result = convertStreamToString(inputStream);
             inputStream.close();
         } catch (IOException e) {
