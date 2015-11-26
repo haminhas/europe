@@ -19,21 +19,19 @@ import java.util.ArrayList;
  */
 public class Connector extends AsyncTask<String, Void, String> {
     private Countries c = new Countries();
-    private boolean first;
 
     public Connector (){
-
-        first = true;
         String country = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR?per_page=100&format=json";
         String female = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SL.EMP.TOTL.SP.FE.ZS?format=json&date=1990:2013&per_page=10000";
         String population = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SP.POP.TOTL?format=json&date=1990%3A2013&per_page=10000";
-        execute(country,female,population);
+        String fpop = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SP.POP.TOTL.FE.ZS?format=json&date=1990%3A2013&per_page=10000";
+        execute(country,female,population,fpop);
     }
     @Override
     protected String doInBackground(String... urls){
         StringBuffer buffer = new StringBuffer();
-        String[] strings = new String[3];
-        for(int i = 0;i<3;i++) {
+        String[] strings = new String[4];
+        for(int i = 0;i<4;i++) {
             buffer = new StringBuffer();
             try {
                 URL url = new URL(urls[i]);
@@ -59,9 +57,11 @@ public class Connector extends AsyncTask<String, Void, String> {
         Log.i("test","ID");
         json(strings[0]);
         Log.i("test","female");
-        getData(strings[1]);
+        getData(strings[1],"first");
         Log.i("test","population");
-        getData(strings[2]);
+        getData(strings[2],"second");
+        Log.i("test","fpop");
+        getData(strings[3],"third");
 
         return (buffer.toString());
     }
@@ -89,7 +89,7 @@ public class Connector extends AsyncTask<String, Void, String> {
         }
     }
 
-    private void getData(String s){
+    private void getData(String s, String number){
         try {
             JSONArray jsArray = new JSONArray(s);
             JSONArray jsData = jsArray.getJSONArray(1);
@@ -107,17 +107,22 @@ public class Connector extends AsyncTask<String, Void, String> {
                 String date = jObject.getString("date");
 
                 temp = value+","+ date;
-                if (first) {
+                if (number.equals("first")) {
                     for (Country j : c.getList()) {
                         if (j.getID().equals(id)) {
                             j.addFemalePercentage(temp);
                         }
                     }
-                    first = false;
-                } else {
+                } else if (number.equals("second")){
                     for (Country j : c.getList()) {
                         if (j.getID().equals(id)) {
                             j.addPopulation(temp);
+                        }
+                    }
+                } else if (number.equals("third")){
+                    for (Country j : c.getList()) {
+                        if (j.getID().equals(id)) {
+                            j.addFemalePercentage(temp);
                         }
                     }
                 }

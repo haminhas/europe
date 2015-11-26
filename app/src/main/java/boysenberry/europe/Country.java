@@ -10,14 +10,15 @@ public class Country {
     private String name;
     private String capital;
     private ArrayList<String> percentageFemale;
-    private String population;
+    private ArrayList<String> population;
+    private ArrayList<String> femalePopulation;
 
     public Country (String ID, String name, String capital){
         this.ID = ID;
         this.name = name;
         this.capital = capital;
         percentageFemale = new ArrayList<String>();
-        population = "";
+        population = new ArrayList<String>();
     }
 
     public String getID(){
@@ -45,10 +46,18 @@ public class Country {
     }
 
     public void addPopulation(String s){
-        population = s;
+        population.add(s);
     }
 
-    public String getPopulation(){
+    public ArrayList<String> getPopulation(){
         return population;
+    }
+
+    public void addFemalePopulation(String s){
+        femalePopulation.add(s);
+    }
+
+    public ArrayList<String> getFemalePopulation(){
+        return femalePopulation;
     }
 }
