@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,9 +44,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         geocoder = new Geocoder(this, Locale.getDefault());
         mTextView = (TextView)findViewById(R.id.mTextView);
+
         rlInfo = (RelativeLayout)findViewById(R.id.rlInfo);
         rlInfo.setVisibility(View.INVISIBLE);
-        //rlInfo.setAlpha(0.95f);
+
     }
 
     // Map API
