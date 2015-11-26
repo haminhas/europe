@@ -16,7 +16,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -32,6 +34,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Geocoder geocoder;
     private Marker marker;
     private RelativeLayout rlInfo;
+
+    LatLng center = new LatLng(57.75, 18);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +62,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         LatLng germany = new LatLng(52, 13);
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(germany));
+        //mMap.animateCamera(CameraUpdateFactory.newLatLng(germany));
+
+        //Sets camera to the centre point in Europe at zoom level 4 so all European countries are shown
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 4));
 
         mMap.setOnMapClickListener(this);
         mMap.setOnMapLongClickListener(this);
 
         mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
+
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                boundsCheck();
+            }
+        });
+    }
+    //Checks if the centre point of the camera is outside of the Europe bound, and if so resets the camera back to Europe.
+    public void boundsCheck() {
+
+        LatLngBounds europeBounds = new LatLngBounds(
+                new LatLng(35,-25),
+                new LatLng(70, 45)
+        );
+
+        LatLngBounds visibleBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        if (!europeBounds.contains(visibleBounds.getCenter())){
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 4));
+        }
     }
 
     @Override
