@@ -19,6 +19,7 @@ public class Country {
         this.capital = capital;
         percentageFemale = new ArrayList<String>();
         population = new ArrayList<String>();
+        femalePopulation = new ArrayList<String>();
     }
 
     public String getID(){
