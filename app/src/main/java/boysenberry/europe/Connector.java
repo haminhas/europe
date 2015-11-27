@@ -70,9 +70,6 @@ public class Connector extends AsyncTask<String, Void, String> {
         //Save data for all countries into separate files
         for (Country co : c.getList())
             Data.saveData(context, co.getName(), co.toString());
-
-        Log.i("TESTING GET DATA:", Data.getData(c.getList().get(15).getName()));
-
         return (buffer.toString());
     }
 
