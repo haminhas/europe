@@ -79,6 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
     //Checks if the centre point of the camera is outside of the Europe bound, and if so resets the camera back to Europe.
     public void boundsCheck() {
 
