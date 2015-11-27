@@ -24,7 +24,7 @@ public class Countries {
     public String toString() {
         String s = "";
         for (Country c : list) {
-            s = s + "\n" + c.getID() + "," + c.getName() + "," + c.getCapital();
+            s = s + c.toString() + "\r\n";
         }
         return s;
     }

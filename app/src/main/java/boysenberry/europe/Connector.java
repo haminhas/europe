@@ -138,4 +138,8 @@ public class Connector extends AsyncTask<String, Void, String> {
             Log.e("JSONException", "Error: " + e.toString());
         }
     }
+
+    public Countries getCountries(){
+        return c;
+    }
 }

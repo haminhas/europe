@@ -1,6 +1,7 @@
 package boysenberry.europe;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -9,29 +10,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
-
 public class MainActivity extends AppCompatActivity {
-    private String[] names = {"Albania","Andorra","Armenia","Austria","Azerbaijan","Belgium","Bulgaria",
-            "Bosnia and Herzegovina","Belarus","Switzerland","Cyprus","Czech Republic","Germany","Denmark",
-            "Spain","Estonia","Finland","France","United Kingdom","Georgia","Greece","Croatia","Hungary",
-            "Ireland","Iceland","Italy","Kosovo","Liechtenstein","Lithuania","Luxembourg","Latvia","Monaco",
-            "Moldova","Macedonia, FYR","Malta","Montenegro","Netherlands","Norway","Poland","Portugal",
-            "Romania","Russian Federation","San Marino","Serbia","Slovak Republic","Slovenia","Sweden",
-            "Turkey","Ukraine"};
+    private Countries countries;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (isNetworkConnected(this)){
+
+        if (isNetworkConnected(this)) {
             Connector c = new Connector(this.getApplicationContext());
+            countries = c.getCountries();
         } else {
-            for (String s:names){
-                Log.i("TESTING GET DATA:",Data.getData(s));
+            try {
+                countries = Data.getAllData(this.getApplicationContext());
+            }catch(java.lang.RuntimeException e){
+                Log.i("Runtime Exception", "Please connect to the internet");
             }
         }
     }
@@ -60,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isNetworkConnected(Context c) {
         ConnectivityManager cm =
-                (ConnectivityManager)c.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
