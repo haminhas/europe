@@ -1,16 +1,22 @@
 package boysenberry.europe;
 
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -21,6 +27,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
+import org.achartengine.model.CategorySeries;
+import org.achartengine.renderer.DefaultRenderer;
+import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +47,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker marker;
     private RelativeLayout rlInfo;
 
+    private TableLayout tlChart;
+
+    private String [] people = {"male", "female", "alien"};
+    private double [] pop = {3, 4, 5};
+
     LatLng center = new LatLng(57.75, 18);
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +69,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         geocoder = new Geocoder(this, Locale.getDefault());
-        mTextView = (TextView)findViewById(R.id.mTextView);
+        mTextView = (TextView) findViewById(R.id.mTextView);
 
-        rlInfo = (RelativeLayout)findViewById(R.id.rlInfo);
+        rlInfo = (RelativeLayout) findViewById(R.id.rlInfo);
         rlInfo.setVisibility(View.INVISIBLE);
 
+        tlChart = (TableLayout) findViewById(R.id.chartslayout);
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     // Map API
@@ -84,12 +111,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void boundsCheck() {
 
         LatLngBounds europeBounds = new LatLngBounds(
-                new LatLng(35,-25),
+                new LatLng(35, -25),
                 new LatLng(70, 45)
         );
 
         LatLngBounds visibleBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-        if (!europeBounds.contains(visibleBounds.getCenter())){
+        if (!europeBounds.contains(visibleBounds.getCenter())) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 4));
         }
     }
@@ -107,16 +134,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         List<Address> addresses = new ArrayList<>();
         try {
-            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude,1);
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        android.location.Address address = addresses.get(0);
+        Address address = addresses.get(0);
 
         String countryName = "";
         if (address != null) {
-            for (int i = 0; i < address.getMaxAddressLineIndex(); i++){
+            for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
                 countryName = address.getCountryName();
             }
         }
@@ -133,11 +160,99 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mTextView.setText("tapped!, point = " + latLng + "Country " + countryName);
         rlInfo.setVisibility(View.VISIBLE);
 
+        createChart(people, pop);
+
+    }
+
+    // A method that create the chart.
+    // categries eg male,female. Population 2.3, 4.5.
+    public void createChart(String[] categories, double[] population) {
+
+        // Color of each Pie Chart Sections
+        int[] colors = {Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
+                Color.YELLOW, Color.GRAY};
+
+        // Instantiating CategorySeries to plot Pie Chart
+        CategorySeries distributionSeries = new CategorySeries("");
+        for (int i = 0; i < population.length; i++) {
+            // Adding a slice with its values and name to the Pie Chart
+            distributionSeries.add(categories[i], population[i]);
+        }
+
+        // Instantiating a renderer for the Pie Chart
+        DefaultRenderer defaultRenderer = new DefaultRenderer();
+        for (int i = 0; i < population.length; i++) {
+            SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
+            seriesRenderer.setColor(colors[i]);
+            seriesRenderer.setDisplayBoundingPoints(false);
+            // Adding a renderer for a slice
+            defaultRenderer.addSeriesRenderer(seriesRenderer);
+        }
+
+
+        //defaultRenderer.setChartTitle(title);
+        //defaultRenderer.setChartTitleTextSize(50);
+        // disables moving the graph
+        defaultRenderer.setPanEnabled(false);
+        //disables the key
+        defaultRenderer.setShowLegend(false);
+        //defaultRenderer.setLegendHeight(1);
+        defaultRenderer.setScale(0.5f);
+        defaultRenderer.setLabelsTextSize(25);
+        defaultRenderer.setLabelsColor(Color.BLACK);
+
+        // creates pie chart with dataset and Renderer
+        GraphicalView mChartView = ChartFactory.getPieChartView(this, distributionSeries, defaultRenderer);
+
+        mChartView.repaint();
+
+        //Change rlInfo
+        tlChart.addView(mChartView);
     }
 
     public void closeInfo(View view) {
         rlInfo.setVisibility(View.INVISIBLE);
         marker.remove();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Maps Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://boysenberry.europe/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Maps Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://boysenberry.europe/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 }
 
