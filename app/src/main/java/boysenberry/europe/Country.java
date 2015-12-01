@@ -13,6 +13,9 @@ public class Country {
     private ArrayList<String> percentageFemale;
     private ArrayList<String> population;
     private ArrayList<String> femalePopulation;
+    private ArrayList<String> education;
+    private ArrayList<String> labour;
+
 
     public Country(String ID, String name, String capital) {
         this.ID = ID;
@@ -21,6 +24,8 @@ public class Country {
         percentageFemale = new ArrayList<>();
         population = new ArrayList<>();
         femalePopulation = new ArrayList<>();
+        education = new ArrayList<>();
+        labour = new ArrayList<>();
     }
 
     public String getID() {
@@ -59,6 +64,22 @@ public class Country {
         return femalePopulation;
     }
 
+    public ArrayList<String> getEducation(){
+        return education;
+    }
+
+    public void addEducation(String s){
+        education.add(s);
+    }
+
+    public ArrayList<String> getLabour(){
+        return labour;
+    }
+
+    public void addlabour(String s){
+        labour.add(s);
+    }
+
     /**
      * Represent the country as a string: ID, Name, Capital, Population per year,
      * FemalePopulation per year, and PercentageFemale per year, all written in new line.
@@ -74,6 +95,8 @@ public class Country {
         for (String s : femalePopulation)
             sb.append(s).append("\r\n");
         for (String s : percentageFemale)
+            sb.append(s).append("\r\n");
+        for (String s : education)
             sb.append(s).append("\r\n");
 
         return sb.toString();
