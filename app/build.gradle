@@ -32,4 +32,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.google.android.gms:play-services:8.1.0'
     compile files('/Users/Hassan/Desktop/europe/LIBS/achartengine-1.2.0.jar')
+    compile files('/Users/MH/Programming/ProjectWalk/europe/LIBS/achartengine-1.2.0.jar')
 }

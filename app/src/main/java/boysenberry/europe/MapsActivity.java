@@ -41,6 +41,8 @@ import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
 
+    private Countries countries;
+
     private GoogleMap mMap;
     private TextView mTextView;
     private Geocoder geocoder;
@@ -79,6 +81,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+
     }
 
     // Map API
@@ -159,6 +163,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // changes the text view on top of the map
         mTextView.setText("tapped!, point = " + latLng + "Country " + countryName);
         rlInfo.setVisibility(View.VISIBLE);
+
+        //System.out.prinln(countries.getList().get(0).getPercentageFemale());
+
+
+        for(int i = 0; i < countries.getList().size(); i++) {
+
+        }
 
         createChart(people, pop);
 

@@ -80,6 +80,8 @@ public class Country {
         labour.add(s);
     }
 
+
+
     /**
      * Represent the country as a string: ID, Name, Capital, Population per year,
      * FemalePopulation per year, and PercentageFemale per year, all written in new line.
@@ -97,6 +99,8 @@ public class Country {
         for (String s : percentageFemale)
             sb.append(s).append("\r\n");
         for (String s : education)
+            sb.append(s).append("\r\n");
+        for (String s : labour)
             sb.append(s).append("\r\n");
 
         return sb.toString();

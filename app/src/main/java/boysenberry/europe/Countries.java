@@ -28,4 +28,13 @@ public class Countries {
         }
         return s;
     }
+
+    public Country getCountry(String s) {
+        for (Country c: list) {
+            if (s.equals(c.getName())) {
+                return c;
+            }
+        }
+        return null;
+    }
 }
