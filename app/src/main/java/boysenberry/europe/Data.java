@@ -99,8 +99,10 @@ public class Data {
                     co.addPopulation(lines.get(i));
                 else if (i < 51)
                     co.addFemalePopulation(lines.get(i));
-                else
-                    co.addFemalePercentage(lines.get(i));
+                else if (i < 75)
+                    co.addEducation(lines.get(i));
+                else if (i < 99)
+                    co.addlabour(lines.get(i));
             }
             c.add(co);
         }
