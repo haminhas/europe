@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="boysenberry.europe.MapsActivity"
+        tools:layout="@layout/abc_action_bar_title_item"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/rlInfo"
+        android:layout_alignEnd="@+id/rlInfo"
+        android:layout_marginRight="460dp"
+        android:layout_marginEnd="460dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#dbdbdb"
+        android:visibility="visible"
+        android:id="@+id/rlInfo"
+        android:padding="30dp"
+        android:alpha="0.95"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="813dp"
+        android:layout_marginStart="813dp">
+
+        <TextView
+            android:id="@+id/mTextView"
+            android:text="NOTHING"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="43dp"
+            android:layout_below="@+id/spinner"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <Spinner
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:id="@+id/spinner"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"
+            android:layout_marginTop="114dp"
+            android:focusable="false"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <SeekBar
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:max="250"
+            android:progress="0"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/mTextView"
+            android:layout_above="@+id/seekBar"
+            android:id="@+id/chartslayout">
+
+            <LinearLayout
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/mTextView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="45dp"
+                android:focusableInTouchMode="false"
+                android:focusable="false">
+            </LinearLayout>
+        </TableLayout>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/infographictitle"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/rlInfo"
+        android:layout_alignEnd="@+id/rlInfo"
+        android:layout_alignLeft="@+id/rlInfo"
+        android:layout_alignStart="@+id/rlInfo" />
+
+</RelativeLayout>
