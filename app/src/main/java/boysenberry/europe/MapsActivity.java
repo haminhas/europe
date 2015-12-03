@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.android.gms.appindexing.AppIndex;
@@ -46,7 +47,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private RelativeLayout layoutInformation;
     private TextView textCountryName;
     private TextView textCountryPopulation;
-    private Button btnClose;
+    private SeekBar seekBar;
 
     private GoogleApiClient client;
     private Geocoder geocoder;
@@ -122,10 +123,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //layoutInformation.setVisibility(View.INVISIBLE);
         layoutInformation.setAlpha(0.95f);
 
-        //btnClose = (Button)findViewById(R.id.btnClose);
-
         textCountryName = (TextView) findViewById(R.id.textCountryName);
         textCountryPopulation = (TextView) findViewById(R.id.textCountryPopulation);
+
+        seekBar = (SeekBar)findViewById(R.id.seekBarYear);
+        seekBar.setMax(25);
+        seekBar.setOnSeekBarChangeListener(new seekYearChange());
+
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
@@ -260,12 +264,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    private class seekYearChange implements SeekBar.OnSeekBarChangeListener {
+
+        // for testing purposes only
+        TextView text = (TextView)findViewById(R.id.textView);
+
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            text.setText(Integer.toString(1980 + progress));
+        }
+
+        public void onStartTrackingTouch(SeekBar seekBar) {}
+        public void onStopTrackingTouch(SeekBar seekBar) {}
+
+    }
+
+
+
     public void closeButton(View view) {
 
         //layoutInformation.setVisibility(View.INVISIBLE);
-
-
-
     }
 
 }
