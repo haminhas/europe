@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 import java.io.File;
 
 import boysenberry.europe.Data;
-import boysenberry.europe.MainActivity;
 
 /**
  * JUnit test for the Data class

@@ -13,90 +13,68 @@
         tools:context="boysenberry.europe.MapsActivity"
         tools:layout="@layout/abc_action_bar_title_item"
         android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/rlInfo"
-        android:layout_alignEnd="@+id/rlInfo"
-        android:layout_marginRight="460dp"
-        android:layout_marginEnd="460dp" />
+        android:layout_alignParentStart="false" />
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="match_parent"
-        android:background="#dbdbdb"
-        android:visibility="visible"
-        android:id="@+id/rlInfo"
-        android:padding="30dp"
-        android:alpha="0.95"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="813dp"
-        android:layout_marginStart="813dp">
+        android:id="@+id/layoutInformation"
+        android:layout_centerInParent="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="true"
+        android:background="#37a8ea">
 
-        <TextView
-            android:id="@+id/mTextView"
-            android:text="NOTHING"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="43dp"
-            android:layout_below="@+id/spinner"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <Spinner
-            android:layout_width="300dp"
-            android:layout_height="45dp"
-            android:id="@+id/spinner"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"
-            android:layout_marginTop="114dp"
-            android:focusable="false"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-        <SeekBar
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/seekBar"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:max="250"
-            android:progress="0"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
-
-        <TableLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/mTextView"
-            android:layout_above="@+id/seekBar"
-            android:id="@+id/chartslayout">
+            android:visibility="visible">
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:id="@+id/imageCountryFlag"
+                android:src="@drawable/flag"
+                android:layout_alignParentTop="true"
+                android:onClick="closeButton" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Country Name"
+                android:id="@+id/textCountryName"
+                android:layout_gravity="right" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Country Population"
+                android:id="@+id/textCountryPopulation"
+                android:layout_gravity="right" />
 
             <LinearLayout
-                android:id="@+id/chart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@+id/mTextView"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="45dp"
-                android:focusableInTouchMode="false"
-                android:focusable="false">
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/layoutChart" >
+
+                <RelativeLayout
+                    android:layout_width="200dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/chart1"></RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="200dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/chart2"></RelativeLayout>
             </LinearLayout>
-        </TableLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:src="@drawable/infographictitle"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/rlInfo"
-        android:layout_alignEnd="@+id/rlInfo"
-        android:layout_alignLeft="@+id/rlInfo"
-        android:layout_alignStart="@+id/rlInfo" />
 
 </RelativeLayout>
