@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -41,9 +40,9 @@ import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
 
-    private GoogleMap mMap;
     private Countries countries;
 
+    private GoogleMap mMap;
     private RelativeLayout layoutInformation;
     private TextView textCountryName;
     private TextView textCountryPopulation;
@@ -53,16 +52,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Geocoder geocoder;
     private Marker marker;
 
-    private LatLng center = new LatLng(57.75, 18);
-
+    private final LatLng CENTER = new LatLng(57.75, 18);
+    private final int YEAR_END = 2013;
+    private final int YEAR_START = 1990;
     private String countryName;
 
     // CHARTS
     private static int[] COLORS = new int[] {Color.BLUE, Color.RED};
     private static double[] VALUES =new double[] { 10, 11};
     private static String[] NAME_LIST = new String[] {"Male", "Female"};
-//    private CategorySeries mSeries = new CategorySeries("");
-//    private DefaultRenderer mRenderer = new DefaultRenderer();
+
 
     public void createChart(String[] categories, double[] population, RelativeLayout layout) {
 
@@ -127,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textCountryPopulation = (TextView) findViewById(R.id.textCountryPopulation);
 
         seekBar = (SeekBar)findViewById(R.id.seekBarYear);
-        seekBar.setMax(25);
+        seekBar.setMax(YEAR_END - YEAR_START);
         seekBar.setOnSeekBarChangeListener(new seekYearChange());
 
 
@@ -174,11 +173,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng germany = new LatLng(52, 13);
         //mMap.animateCamera(CameraUpdateFactory.newLatLng(germany));
 
+        mMap.setOnMapLongClickListener(this);
+        mMap.setOnMapClickListener(this);
+
         //Sets camera to the centre point in Europe at zoom level 4 so all European countries are shown
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 4));
-
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
         mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
-
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
@@ -186,8 +186,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        mMap.setOnMapLongClickListener(this);
-        mMap.setOnMapClickListener(this);
     }
 
     public void boundsCheck() {
@@ -199,28 +197,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLngBounds visibleBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
         if (!europeBounds.contains(visibleBounds.getCenter())) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 4));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
         }
     }
 
     @Override
     public void onMapLongClick(LatLng latLng) {
 
-        // Removes previously placed marker.
+        // removes previously placed marker.
         if (marker != null) {
             marker.remove();
         }
-        //place marker where user just clicked
+        // for testing purposes place marker
         marker = mMap.addMarker(new MarkerOptions().position(latLng).title(countryName).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
 
         // Getting country name
-//        getCountryName(latLng.latitude, latLng.longitude);
-//        textCountryName.setText(countryName);
+        getCountryName(latLng.latitude, latLng.longitude);
+        textCountryName.setText(countryName);
+        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation().toString());
 
-
-        textCountryName.setText("Germany");
-        textCountryPopulation.setText("1,000,000");
-        //textCountryPopulation.setText(countries.getCountry(countryName).getPopulation().toString());
+//        textCountryName.setText("Germany");
+//        textCountryPopulation.setText("1,000,000");
 
         RelativeLayout chart1 = (RelativeLayout)findViewById(R.id.chart1);
 
@@ -270,7 +267,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         TextView text = (TextView)findViewById(R.id.textView);
 
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            text.setText(Integer.toString(1980 + progress));
+            text.setText(Integer.toString(YEAR_START + progress));
         }
 
         public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -278,10 +275,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
-
     public void closeButton(View view) {
-
         //layoutInformation.setVisibility(View.INVISIBLE);
     }
 
