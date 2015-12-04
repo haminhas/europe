@@ -214,7 +214,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Getting country name
         getCountryName(latLng.latitude, latLng.longitude);
         textCountryName.setText(countryName);
-        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation().toString());
+        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2012").toString());
 
 //        textCountryName.setText("Germany");
 //        textCountryPopulation.setText("1,000,000");

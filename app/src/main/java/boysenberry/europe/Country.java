@@ -1,6 +1,8 @@
 package boysenberry.europe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Hassan on 24/11/2015.
@@ -28,6 +30,51 @@ public class Country {
         labour = new ArrayList<>();
     }
 
+
+    public void addFemalePercentage(String s) {
+        percentageFemale.add(s);
+    }
+
+    public void addPopulation(String s) {
+        population.add(s);
+    }
+
+    public void addFemalePopulation(String s) {
+        femalePopulation.add(s);
+    }
+
+    public void addlabour(String s) {
+        labour.add(s);
+    }
+
+    public void addEducation(String s) {
+        education.add(s);
+    }
+
+    public String getLabour(String year) {
+        return getDataPerYear(year, labour);
+    }
+
+    public String getFemalePopulation(String year) {
+        return getDataPerYear(year, femalePopulation);
+    }
+
+    public String getEducation(String year) {
+        return getDataPerYear(year, education);
+    }
+
+    public String getPercentageFemale(String year) {
+        return getDataPerYear(year, percentageFemale);
+    }
+
+    public String getCapital() {
+        return capital;
+    }
+
+    public String getPopulation(String year) {
+        return getDataPerYear(year, population);
+    }
+
     public String getID() {
         return ID;
     }
@@ -36,51 +83,14 @@ public class Country {
         return name;
     }
 
-    public String getCapital() {
-        return capital;
+    private String getDataPerYear(String year, ArrayList<String> arrayList) {
+        for (String data : arrayList) {
+            List<String> oneYear = Arrays.asList(data.split(","));
+            if (oneYear.get(1).equalsIgnoreCase(year))
+                return oneYear.get(0);
+        }
+        return "NoDataForYear:" + year;
     }
-
-    public void addFemalePercentage(String s) {
-        percentageFemale.add(s);
-    }
-
-    public ArrayList<String> getPercentageFemale() {
-        return percentageFemale;
-    }
-
-    public void addPopulation(String s) {
-        population.add(s);
-    }
-
-    public ArrayList<String> getPopulation() {
-        return population;
-    }
-
-    public void addFemalePopulation(String s) {
-        femalePopulation.add(s);
-    }
-
-    public ArrayList<String> getFemalePopulation() {
-        return femalePopulation;
-    }
-
-    public ArrayList<String> getEducation(){
-        return education;
-    }
-
-    public void addEducation(String s){
-        education.add(s);
-    }
-
-    public ArrayList<String> getLabour(){
-        return labour;
-    }
-
-    public void addlabour(String s){
-        labour.add(s);
-    }
-
-
 
     /**
      * Represent the country as a string: ID, Name, Capital, Population per year,
