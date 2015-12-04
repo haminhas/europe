@@ -176,14 +176,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapClickListener(this);
 
         //Sets camera to the centre point in Europe at zoom level 4 so all European countries are shown
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
-        mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
-        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                boundsCheck();
-            }
-        });
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+//        mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
+//        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+//            @Override
+//            public void onCameraChange(CameraPosition cameraPosition) {
+//                boundsCheck();
+//            }
+//        });
 
     }
 
@@ -216,7 +216,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2012").toString());
 
 //        textCountryName.setText("Germany");
-        textCountryPopulation.setText("1,000,000");
+        //textCountryPopulation.setText("1,000,000");
 
         RelativeLayout chart1 = (RelativeLayout)findViewById(R.id.chart1);
 
@@ -228,7 +228,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         RelativeLayout chart2 = (RelativeLayout)findViewById(R.id.chart2);
 
-        createChart( NAME_LIST, VALUES, chart2);
+        createChart(NAME_LIST, VALUES, chart2);
 
         layoutInformation.setVisibility(View.VISIBLE);
     }
@@ -239,7 +239,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("MainActivity", "WHY WONT YOU WORK>!");
         List<Address> addresses = new ArrayList<>();
         try {
-            addresses = geocoder.getFromLocation(latitude, longitude,1);
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
             Log.d("MainActivity", "Got the country name.");
         } catch (IOException e) {
             e.printStackTrace();
@@ -253,6 +253,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 countryName = address.getCountryName();
             }
         }
+        if(countryName.equals("Macedonia (FYROM)")) {
+            countryName = "Macedonia, FYR";
+        }
+        else if(countryName.equals("Kosova (Kosovo)")) {
+            countryName = "Kosovo";
+        }
+        else if(countryName.equals("Slovakia")) {
+            countryName = "Slovak Republic";
+        }
+
     }
 
     @Override
