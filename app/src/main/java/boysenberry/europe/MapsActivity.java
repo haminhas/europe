@@ -164,6 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // Maps API
     // https://developers.google.com/android/reference/com/google/android/gms/maps/package-summary
 
+    //TO-DO kosovo isnt working
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -221,9 +222,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         RelativeLayout chart1 = (RelativeLayout)findViewById(R.id.chart1);
 
         // Creating chart
-        createChart(NAME_LIST, VALUES, chart1);
+        String femalePopulationPercentage = countries.getCountry(countryName).getEducation("2000");
+        double femalePop = Double.parseDouble(femalePopulationPercentage);
+        double malePop = 100 - femalePop;
+        double[] popPercentage = {malePop, femalePop};
+        createChart(NAME_LIST, popPercentage, chart1);
 
-        double[] VALUES =new double[] { 100, 400};
+        double[] VALUES = new double[] { 100, 400};
         String[] NAME_LIST = new String[] {"MMale", "FFemale"};
 
         RelativeLayout chart2 = (RelativeLayout)findViewById(R.id.chart2);
@@ -261,6 +266,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         else if(countryName.equals("Slovakia")) {
             countryName = "Slovak Republic";
+        }
+        else if(countryName.equals("Russia")) {
+            countryName = "Russian Federation";
         }
 
     }

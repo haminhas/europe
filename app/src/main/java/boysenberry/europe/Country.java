@@ -1,5 +1,7 @@
 package boysenberry.europe;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,11 +14,11 @@ public class Country {
     private String ID;
     private String name;
     private String capital;
-    private ArrayList<String> percentageFemale;
-    private ArrayList<String> population;
-    private ArrayList<String> femalePopulation;
-    private ArrayList<String> education;
-    private ArrayList<String> labour;
+    private ArrayList<String> percentageFemale;// employment to female ratio
+    private ArrayList<String> population; // total population
+    private ArrayList<String> femalePopulation; //percetage of feaml population
+    private ArrayList<String> education; // labor force with education (& of female labor force)
+    private ArrayList<String> labour; // labor force, female (%percentage of total labor force)
 
 
     public Country(String ID, String name, String capital) {
@@ -63,6 +65,7 @@ public class Country {
         return getDataPerYear(year, education);
     }
 
+    // Labour
     public String getPercentageFemale(String year) {
         return getDataPerYear(year, percentageFemale);
     }
@@ -86,7 +89,8 @@ public class Country {
     private String getDataPerYear(String year, ArrayList<String> arrayList) {
         for (String data : arrayList) {
             List<String> oneYear = Arrays.asList(data.split(","));
-            if (oneYear.get(1).equalsIgnoreCase(year))
+            Log.i("TEST","yearGiven"+year+"yearInArray"+oneYear.get(1));
+            if (oneYear.get(1).contains(year))
                 return oneYear.get(0);
         }
         return "NoDataForYear:" + year;

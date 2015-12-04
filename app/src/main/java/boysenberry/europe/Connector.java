@@ -132,7 +132,7 @@ public class Connector extends AsyncTask<String, Void, String> {
                 } else if (number.equals("third")) {
                     for (Country j : c.getList()) {
                         if (j.getID().equals(id)) {
-                            j.addFemalePercentage(temp);
+                            j.addFemalePopulation(temp);
                         }
                     }
                 } else if (number.equals("fourth")) {
