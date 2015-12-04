@@ -157,7 +157,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return false;
         }
         //boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-
         return true;
     }
 
@@ -217,7 +216,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2012").toString());
 
 //        textCountryName.setText("Germany");
-//        textCountryPopulation.setText("1,000,000");
+        textCountryPopulation.setText("1,000,000");
 
         RelativeLayout chart1 = (RelativeLayout)findViewById(R.id.chart1);
 
@@ -267,6 +266,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         TextView text = (TextView)findViewById(R.id.textView);
 
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
             text.setText(Integer.toString(YEAR_START + progress));
         }
 
