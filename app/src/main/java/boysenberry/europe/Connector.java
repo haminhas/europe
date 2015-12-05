@@ -19,17 +19,15 @@ import java.net.URL;
  * Class which collects all data from the world bank
  */
 public class Connector extends AsyncTask<String, Void, String[]> {
-    private Context context;
 
-    public Connector(Context context) {
-        this.context = context;
+    public String [] r (String... urls){
+        return doInBackground(urls);
     }
-
     @Override
     protected String[] doInBackground(String... urls) {
-        String[] json = new String[6];
+        String[] json = new String[urls.length];
         StringBuffer buffer;
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < urls.length; i++) {
             buffer = new StringBuffer();
             try {
                 URL url = new URL(urls[i]);
