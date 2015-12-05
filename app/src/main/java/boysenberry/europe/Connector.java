@@ -20,6 +20,9 @@ import java.net.URL;
  */
 public class Connector extends AsyncTask<String, Void, String[]> {
 
+    public String [] r (String... urls){
+        return doInBackground(urls);
+    }
     @Override
     protected String[] doInBackground(String... urls) {
         String[] json = new String[urls.length];
