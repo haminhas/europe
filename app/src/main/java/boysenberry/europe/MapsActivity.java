@@ -218,11 +218,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Getting country name
         getCountryName(latLng.latitude, latLng.longitude);
         textCountryName.setText(countryName);
-        //textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2012").toString());
+        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2012").toString());
         textCountryCapital.setText(countries.getCountry(countryName).getCapital());
-
-//        textCountryName.setText("Germany");
-        //textCountryPopulation.setText("1,000,000");
 
         createDougnutCharts("2002");
 
@@ -330,6 +327,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
             text.setText(Integer.toString(YEAR_START + progress));
+            int year = YEAR_START + progress;
+
+            createDougnutCharts(year + "");
         }
 
         public void onStartTrackingTouch(SeekBar seekBar) {}
