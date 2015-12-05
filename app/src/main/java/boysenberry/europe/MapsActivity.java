@@ -32,6 +32,7 @@ import org.achartengine.GraphicalView;
 import org.achartengine.model.MultipleCategorySeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private RelativeLayout layoutInformation;
     private TextView textCountryName;
     private TextView textCountryPopulation;
+    private TextView textCountryCapital;
     private SeekBar seekBar;
 
     private GoogleApiClient client;
@@ -82,26 +84,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mRenderer.setPanEnabled(false);
         mRenderer.setAntialiasing(true);
         mRenderer.setZoomButtonsVisible(true);
-
+        mRenderer.setShowLabels(false);
         mRenderer.setDisplayValues(true);
-
         mRenderer.setShowLegend(false);
         mRenderer.setZoomEnabled(false);
         mRenderer.setBackgroundColor(Color.MAGENTA);
         //mRenderer.setScale(0.5f);
         mRenderer.setLabelsTextSize(15);
-        //mRenderer.
 
-
-        mRenderer.setLabelsColor(Color.BLACK);
-
-        //mChartView = ChartFactory.getPieChartView(this, mSeries, mRenderer);
         mChartView = ChartFactory.getDoughnutChartView(this, mSeries, mRenderer);
-
 
         mChartView.repaint();
         layout.addView(mChartView);
-
     }
 
     @Override
@@ -125,6 +119,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         textCountryName = (TextView) findViewById(R.id.textCountryName);
         textCountryPopulation = (TextView) findViewById(R.id.textCountryPopulation);
+        textCountryCapital = (TextView) findViewById(R.id.textCountryCapital);
 
         seekBar = (SeekBar)findViewById(R.id.seekBarYear);
         seekBar.setMax(YEAR_END - YEAR_START);
@@ -224,36 +219,67 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getCountryName(latLng.latitude, latLng.longitude);
         textCountryName.setText(countryName);
         //textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2012").toString());
-        textCountryPopulation.setText(countries.getCountry(countryName).getCapital());
+        textCountryCapital.setText(countries.getCountry(countryName).getCapital());
 
 //        textCountryName.setText("Germany");
         //textCountryPopulation.setText("1,000,000");
 
+        createDougnutCharts("2002");
+
+        layoutInformation.setVisibility(View.VISIBLE);
+    }
+
+    private void createDougnutCharts(String year) {
+
+        TextView errors = (TextView)findViewById(R.id.textView2);
+
+        // Creats a chart to show labour ratios between female and male
         RelativeLayout chart1 = (RelativeLayout)findViewById(R.id.chart1);
-
-        // Creating chart
         try{
+            String femaleLabourPercentage = countries.getCountry(countryName).getLabour(year);
+            double femaleLabour = Double.parseDouble(femaleLabourPercentage);
 
-            String femalePopulationPercentage = countries.getCountry(countryName).getFemalePopulation("2000");
-            double femalePop = Double.parseDouble(femalePopulationPercentage);
-
-            double malePop = 100 - femalePop;
-            double[] popPercentage = {malePop, femalePop};
-            createChart(NAME_LIST, popPercentage, chart1);
+            double maleLabour = 100 - femaleLabour;
+            double[] labour = {maleLabour, femaleLabour};
+            createChart(NAME_LIST, labour, chart1);
         }catch(NumberFormatException e){
             e.printStackTrace();
+            errors.setText("First Chart is not working.");
+
+        }
+
+        // Chart to show percentage of labour force which is female and male
+        RelativeLayout chart2 = (RelativeLayout)findViewById(R.id.chart2);
+        try{
+            String femaleEducationPercentage = countries.getCountry(countryName).getEducation(year);
+            double femaleEducation = Double.parseDouble(femaleEducationPercentage);
+
+            double maleEducation = 100 - femaleEducation;
+            double[] education = {maleEducation, femaleEducation};
+            createChart(NAME_LIST, education, chart2);
+        }catch(NumberFormatException e){
+            e.printStackTrace();
+            errors.setText(errors.getText().toString() + "| Second chart is not working");
+        }
+
+        // Chart to show percentage of labour force which is female and male
+        RelativeLayout chart3 = (RelativeLayout)findViewById(R.id.chart3);
+        try{
+            String femaleEmploymentPercentage = countries.getCountry(countryName).getPercentageFemale(year);
+            double femaleEmployment = Double.parseDouble(femaleEmploymentPercentage);
+
+            double maleEmployment = 100 - femaleEmployment;
+            double[] employment = {maleEmployment, femaleEmployment};
+            createChart(NAME_LIST, employment, chart3);
+
+        }catch(NumberFormatException e){
+            e.printStackTrace();
+            errors.setText(errors.getText().toString() + "| Third chart is not working");
             // add message here for null data
         }
 
 
-        double[] VALUES = new double[] { 100, 400};
-        String[] NAME_LIST = new String[] {"MMale", "FFemale"};
 
-        RelativeLayout chart2 = (RelativeLayout)findViewById(R.id.chart2);
-
-        createChart(NAME_LIST, VALUES, chart2);
-
-        layoutInformation.setVisibility(View.VISIBLE);
     }
 
     public void getCountryName(double latitude, double longitude) {

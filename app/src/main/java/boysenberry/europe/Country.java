@@ -53,30 +53,34 @@ public class Country {
         education.add(s);
     }
 
+    // Returns percentage of labour force which are female
     public String getLabour(String year) {
         return getDataPerYear(year, labour);
     }
 
+    // Returns employment ratio between female and male
     public String getFemalePopulation(String year) {
         return getDataPerYear(year, femalePopulation);
     }
 
+    // Returns labour force with education
     public String getEducation(String year) {
         return getDataPerYear(year, education);
     }
 
-    // Labour
+    // returns employment ratios between female and male
     public String getPercentageFemale(String year) {
         return getDataPerYear(year, percentageFemale);
+    }
+
+    public String getPopulation(String year) {
+        return getDataPerYear(year, population);
     }
 
     public String getCapital() {
         return capital;
     }
 
-    public String getPopulation(String year) {
-        return getDataPerYear(year, population);
-    }
 
     public String getID() {
         return ID;
