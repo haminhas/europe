@@ -66,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static String[] NAME_LIST = new String[] {"Male", "Female"};
 
 
-    public void createChart(String[] categories, double[] population, RelativeLayout layout) {
+    public void createChart(String[] categories, double[] population, RelativeLayout layout, String title) {
 
         GraphicalView mChartView;
         MultipleCategorySeries mSeries = new MultipleCategorySeries("");
@@ -91,6 +91,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mRenderer.setBackgroundColor(Color.MAGENTA);
         //mRenderer.setScale(0.5f);
         mRenderer.setLabelsTextSize(15);
+
+        mRenderer.setChartTitle(title);
+        mRenderer.setChartTitleTextSize(20);
 
         mChartView = ChartFactory.getDoughnutChartView(this, mSeries, mRenderer);
 
@@ -235,17 +238,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Getting country name
         getCountryName(latLng.latitude, latLng.longitude);
         textCountryName.setText(countryName);
-        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2012").toString());
+        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2013").toString());
         textCountryCapital.setText(countries.getCountry(countryName).getCapital());
 
-        createDougnutCharts("2002");
+        createDougnutCharts("2013");
 
         layoutInformation.setVisibility(View.VISIBLE);
     }
 
-    private void createDougnutCharts(String year) {
+    private void addErrorMessage(int index, RelativeLayout chart) {
+        TextView errorMessage = new TextView(this);
 
-        TextView errors = (TextView)findViewById(R.id.textView2);
+        if(index == 1) {
+            chart.removeAllViews();
+            errorMessage.setText("Chart 1 doesn't have data for this year.");
+            chart.addView(errorMessage);
+        }
+        if(index == 2) {
+            chart.removeAllViews();
+            errorMessage.setText("Chart 2 doesn't have data for this year.");
+            chart.addView(errorMessage);
+        }
+        if(index == 3) {
+            chart.removeAllViews();
+            errorMessage.setText("Chart 3 doesn't have data for this year.");
+            chart.addView(errorMessage);
+        }
+
+    }
+
+    private void createDougnutCharts(String year) {
 
         // Creats a chart to show labour ratios between female and male
         RelativeLayout chart1 = (RelativeLayout)findViewById(R.id.chart1);
@@ -255,11 +277,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             double maleLabour = 100 - femaleLabour;
             double[] labour = {maleLabour, femaleLabour};
-            createChart(NAME_LIST, labour, chart1);
+            chart1.removeAllViews();
+            createChart(NAME_LIST, labour, chart1, "Ratio of female to male labour force.");
         }catch(NumberFormatException e){
             e.printStackTrace();
-            errors.setText("First Chart is not working.");
-
+            addErrorMessage(1, chart1);
         }
 
         // Chart to show percentage of labour force which is female and male
@@ -270,10 +292,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             double maleEducation = 100 - femaleEducation;
             double[] education = {maleEducation, femaleEducation};
-            createChart(NAME_LIST, education, chart2);
+            chart2.removeAllViews();
+            createChart(NAME_LIST, education, chart2, "Ratio of female to male education.");
         }catch(NumberFormatException e){
             e.printStackTrace();
-            errors.setText(errors.getText().toString() + "| Second chart is not working");
+            addErrorMessage(2, chart2);
+
         }
 
         // Chart to show percentage of labour force which is female and male
@@ -284,15 +308,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             double maleEmployment = 100 - femaleEmployment;
             double[] employment = {maleEmployment, femaleEmployment};
-            createChart(NAME_LIST, employment, chart3);
-
+            chart3.removeAllViews();
+            createChart(NAME_LIST, employment, chart3, "Ratio of female to male labour force.");
         }catch(NumberFormatException e){
             e.printStackTrace();
-            errors.setText(errors.getText().toString() + "| Third chart is not working");
-            // add message here for null data
+            addErrorMessage(3, chart3);
+
+
         }
-
-
 
     }
 
@@ -347,6 +370,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             int year = YEAR_START + progress;
 
             createDougnutCharts(year + "");
+            textCountryPopulation.setText(countries.getCountry(countryName).getPopulation(year + ""));
         }
 
         public void onStartTrackingTouch(SeekBar seekBar) {}
