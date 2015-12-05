@@ -177,14 +177,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapClickListener(this);
 
         //Sets camera to the centre point in Europe at zoom level 4 so all European countries are shown
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
-//        mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
-//        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-//            @Override
-//            public void onCameraChange(CameraPosition cameraPosition) {
-//                boundsCheck();
-//            }
-//        });
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+        mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                boundsCheck();
+            }
+        });
 
     }
 
@@ -214,7 +214,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Getting country name
         getCountryName(latLng.latitude, latLng.longitude);
         textCountryName.setText(countryName);
-        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2012").toString());
+        //textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2012").toString());
+        textCountryPopulation.setText(countries.getCountry(countryName).getCapital());
 
 //        textCountryName.setText("Germany");
         //textCountryPopulation.setText("1,000,000");
@@ -222,11 +223,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         RelativeLayout chart1 = (RelativeLayout)findViewById(R.id.chart1);
 
         // Creating chart
-        String femalePopulationPercentage = countries.getCountry(countryName).getEducation("2000");
-        double femalePop = Double.parseDouble(femalePopulationPercentage);
-        double malePop = 100 - femalePop;
-        double[] popPercentage = {malePop, femalePop};
-        createChart(NAME_LIST, popPercentage, chart1);
+        try{
+
+            String femalePopulationPercentage = countries.getCountry(countryName).getFemalePopulation("2000");
+            double femalePop = Double.parseDouble(femalePopulationPercentage);
+
+            double malePop = 100 - femalePop;
+            double[] popPercentage = {malePop, femalePop};
+            createChart(NAME_LIST, popPercentage, chart1);
+        }catch(NumberFormatException e){
+            e.printStackTrace();
+            // add message here for null data
+        }
+
 
         double[] VALUES = new double[] { 100, 400};
         String[] NAME_LIST = new String[] {"MMale", "FFemale"};
