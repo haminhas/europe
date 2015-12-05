@@ -16,31 +16,9 @@ import java.util.concurrent.ExecutionException;
 public class JSONparser {
     private Context context;
     private Countries c = new Countries();
-    private Connector con;
-    private String[] json;
 
-    public JSONparser (Context context, String[] urls) {
-        json = new String[6];
-        this.context = context;
-        con = new Connector(this.context);
-            //String temp  = con.doInBackground(s);
-            try{
-                json = con.execute(urls).get();
-            } catch (InterruptedException | ExecutionException e){
-                e.printStackTrace();
-            }
-
-        Country(json[0]);
-        Data(json[1], "first");
-        Data(json[2], "second");
-        Data(json[3], "third");
-        Data(json[4], "forth");
-        Data(json[5], "fifth");
-
-        saveData();
-    }
-
-    private void Country(String s) {
+    public String Country(String s) {
+        String temp = "";
         try {
             JSONArray jsArray = new JSONArray(s);
             JSONArray jsData = jsArray.getJSONArray(1);
@@ -53,14 +31,17 @@ public class JSONparser {
                 String capital = jObject.getString("capitalCity");
                 Country t = new Country(id, name, capital);
                 c.add(t);
+                temp = id +" "+ name +" "+ capital;
 
             } // End Loop
         } catch (JSONException e) {
             Log.e("JSONException", "Error: " + e.toString());
         }
+        return temp;
     }
 
-    private void Data(String s, String number) {
+    public String[] Data(String s, String number) {
+        ArrayList<String> t = new ArrayList<>();
         try {
             JSONArray jsArray = new JSONArray(s);
             JSONArray jsData = jsArray.getJSONArray(1);
@@ -78,7 +59,7 @@ public class JSONparser {
                 String date = jObject.getString("date");
 
                 temp = value + "," + date;
-
+                t.add(temp);
                 for (Country j : c.getList()) {
                     if (j.getID().equals(id)) {
                         if (number.equals("first")) {
@@ -101,15 +82,23 @@ public class JSONparser {
         } catch (JSONException e) {
             Log.e("JSONException", "Error: " + e.toString());
         }
+        String[]  j = t.toArray(new String[t.size()]);
+        return j;
     }
 
     public Countries getCountries(){
         return c;
     }
 
-    private void saveData(){
+    public void saveData(Context context){
+        this.context = context;
+
         for (Country co : c.getList())
             Data.saveData(context, co.getName(), co.toString());
     }
 
+
+
 }
+
+

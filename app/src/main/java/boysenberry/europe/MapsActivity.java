@@ -43,14 +43,14 @@ import java.util.concurrent.ExecutionException;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
 
     private Countries countries;
-
+    private Connector con;
     private GoogleMap mMap;
     private RelativeLayout layoutInformation;
     private TextView textCountryName;
     private TextView textCountryPopulation;
     private TextView textCountryCapital;
     private SeekBar seekBar;
-
+    private String[] json;
     private GoogleApiClient client;
     private Geocoder geocoder;
     private Marker marker;
@@ -139,7 +139,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String labour = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SL.TLF.TOTL.FE.ZS?format=json&date=1990:2013&per_page=10000";
 
             String[] ar = {country,female,population,fpop,education,labour};
-            JSONparser p = new JSONparser(this.getApplicationContext(),ar);
+            con = new Connector();
+            json = new String[6];
+            try{
+                json = con.execute(ar).get();
+            } catch (InterruptedException | ExecutionException e){
+                e.printStackTrace();
+            }
+
+            JSONparser p = new JSONparser();
+
+            p.Country(json[0]);
+            p.Data(json[1], "first");
+            p.Data(json[2], "second");
+            p.Data(json[3], "third");
+            p.Data(json[4], "fourth");
+            p.Data(json[5], "fifth");
+
+            p.saveData(this.getApplicationContext());
             countries = p.getCountries();
         } else {
             try {
