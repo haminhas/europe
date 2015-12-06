@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:alpha="0.95">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -22,7 +23,7 @@
         android:layout_centerInParent="true"
         android:layout_alignParentLeft="false"
         android:layout_alignParentRight="true"
-        android:background="#d5e2ea">
+        android:background="#ffffff">
 
         <LinearLayout
             android:orientation="vertical"
@@ -41,6 +42,13 @@
                     android:src="@drawable/germany"
                     android:layout_alignParentTop="true"
                     android:onClick="closeButton" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Year"
+                    android:id="@+id/textYear" />
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -124,20 +132,6 @@
                             android:layout_height="200dp"
                             android:id="@+id/chart4"></RelativeLayout>
                     </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Large Text"
-                        android:id="@+id/textView" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Large Text"
-                        android:id="@+id/textView2" />
 
                 </LinearLayout>
             </ScrollView>

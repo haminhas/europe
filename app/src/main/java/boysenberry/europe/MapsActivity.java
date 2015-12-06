@@ -44,62 +44,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Countries countries;
     private Connector con;
-    private GoogleMap mMap;
-    private RelativeLayout layoutInformation;
-    private TextView textCountryName;
-    private TextView textCountryPopulation;
-    private TextView textCountryCapital;
-    private SeekBar seekBar;
     private String[] json;
     private GoogleApiClient client;
     private Geocoder geocoder;
     private Marker marker;
 
+    private GoogleMap mMap;
+    private RelativeLayout layoutInformation;
+    private SeekBar seekBar;
+    private TextView textCountryName;
+    private TextView textCountryPopulation;
+    private TextView textCountryCapital;
+    private TextView textYear;
+
     private final LatLng CENTER = new LatLng(57.75, 18);
     private final int YEAR_END = 2013;
     private final int YEAR_START = 1990;
     private String countryName;
-
-    // CHARTS
-    private static int[] COLORS = new int[] {Color.BLUE, Color.RED};
-    private static double[] VALUES =new double[] { 10, 11};
-    private static String[] NAME_LIST = new String[] {"Male", "Female"};
-
-
-    public void createChart(String[] categories, double[] population, RelativeLayout layout, String title) {
-
-        GraphicalView mChartView;
-        MultipleCategorySeries mSeries = new MultipleCategorySeries("");
-        DefaultRenderer mRenderer = new DefaultRenderer();
-
-        mSeries.add(categories, population);
-
-        for(int i = 0; i < population.length; i++) {
-            SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
-            seriesRenderer.setColor(COLORS[i]);
-            seriesRenderer.setDisplayBoundingPoints(false);
-            mRenderer.addSeriesRenderer(seriesRenderer);
-        }
-
-        mRenderer.setPanEnabled(false);
-        mRenderer.setAntialiasing(true);
-        mRenderer.setZoomButtonsVisible(true);
-        mRenderer.setShowLabels(false);
-        mRenderer.setDisplayValues(true);
-        mRenderer.setShowLegend(false);
-        mRenderer.setZoomEnabled(false);
-        mRenderer.setBackgroundColor(Color.MAGENTA);
-        //mRenderer.setScale(0.5f);
-        mRenderer.setLabelsTextSize(15);
-
-        mRenderer.setChartTitle(title);
-        mRenderer.setChartTitleTextSize(20);
-
-        mChartView = ChartFactory.getDoughnutChartView(this, mSeries, mRenderer);
-
-        mChartView.repaint();
-        layout.addView(mChartView);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,21 +74,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startUp();
     }
 
+    //TO-DO kosovo isnt working
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        mMap.getUiSettings().setMapToolbarEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        LatLng germany = new LatLng(52, 13);
+        //mMap.animateCamera(CameraUpdateFactory.newLatLng(germany));
+
+        mMap.setOnMapLongClickListener(this);
+        mMap.setOnMapClickListener(this);
+
+        //Sets camera to the centre point in Europe at zoom level 4 so all European countries are shown
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+        mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                boundsCheck();
+            }
+        });
+
+    }
+
+    /**
+     * Used to set up key components of the MapsActivity.
+     */
     private void startUp() {
 
         geocoder = new Geocoder(this, Locale.getDefault());
         layoutInformation = (RelativeLayout) findViewById(R.id.layoutInformation);
+        //layoutInformation.setAlpha(0.95f);
         //layoutInformation.setVisibility(View.INVISIBLE);
-        layoutInformation.setAlpha(0.95f);
 
         textCountryName = (TextView) findViewById(R.id.textCountryName);
         textCountryPopulation = (TextView) findViewById(R.id.textCountryPopulation);
         textCountryCapital = (TextView) findViewById(R.id.textCountryCapital);
+        textYear = (TextView)findViewById(R.id.textYear);
 
         seekBar = (SeekBar)findViewById(R.id.seekBarYear);
         seekBar.setMax(YEAR_END - YEAR_START);
         seekBar.setOnSeekBarChangeListener(new seekYearChange());
-
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
@@ -171,9 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private boolean isNetworkConnected(Context c) {
-        ConnectivityManager cm =
-                (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
-
+        ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork == null) {
@@ -182,34 +169,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         //boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         return true;
-    }
-
-
-    // Maps API
-    // https://developers.google.com/android/reference/com/google/android/gms/maps/package-summary
-
-    //TO-DO kosovo isnt working
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        LatLng germany = new LatLng(52, 13);
-        //mMap.animateCamera(CameraUpdateFactory.newLatLng(germany));
-
-        mMap.setOnMapLongClickListener(this);
-        mMap.setOnMapClickListener(this);
-
-        //Sets camera to the centre point in Europe at zoom level 4 so all European countries are shown
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
-        mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
-        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                boundsCheck();
-            }
-        });
-
     }
 
     public void boundsCheck() {
@@ -231,94 +190,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // removes previously placed marker.
         if (marker != null) {
             marker.remove();
-        }
-        // for testing purposes place marker
+        }// for testing purposes place marker
         marker = mMap.addMarker(new MarkerOptions().position(latLng).title(countryName).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
 
         // Getting country name
         getCountryName(latLng.latitude, latLng.longitude);
-        textCountryName.setText(countryName);
+
+        textCountryName.setText(countryName.toUpperCase());
         textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2013").toString());
         textCountryCapital.setText(countries.getCountry(countryName).getCapital());
+        textYear.setText("2013");
+        seekBar.setProgress(2013);
 
         createDougnutCharts("2013");
 
         layoutInformation.setVisibility(View.VISIBLE);
     }
 
-    private void addErrorMessage(int index, RelativeLayout chart) {
-        TextView errorMessage = new TextView(this);
+    @Override
+    public void onMapClick(LatLng latLng) {
+        // Getting country name
+        getCountryName(latLng.latitude, latLng.longitude);
 
-        if(index == 1) {
-            chart.removeAllViews();
-            errorMessage.setText("Chart 1 doesn't have data for this year.");
-            chart.addView(errorMessage);
+        textCountryName.setText(countryName.toUpperCase());
+        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2013").toString());
+        textCountryCapital.setText(countries.getCountry(countryName).getCapital());
+        textYear.setText("2013");
+        seekBar.setProgress(2013);
+
+        createDougnutCharts("2013");
+
+        layoutInformation.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Check for changes on seek bar. When the user uses it the information layout
+     * is updated accordingly.
+     */
+    private class seekYearChange implements SeekBar.OnSeekBarChangeListener {
+
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            int year = YEAR_START + progress;
+
+            createDougnutCharts(year + "");
+            textYear.setText(year + "");
+            textCountryPopulation.setText(countries.getCountry(countryName).getPopulation(year + ""));
         }
-        if(index == 2) {
-            chart.removeAllViews();
-            errorMessage.setText("Chart 2 doesn't have data for this year.");
-            chart.addView(errorMessage);
-        }
-        if(index == 3) {
-            chart.removeAllViews();
-            errorMessage.setText("Chart 3 doesn't have data for this year.");
-            chart.addView(errorMessage);
-        }
+
+        public void onStartTrackingTouch(SeekBar seekBar) {}
+        public void onStopTrackingTouch(SeekBar seekBar) {}
 
     }
 
-    private void createDougnutCharts(String year) {
-
-        // Creats a chart to show labour ratios between female and male
-        RelativeLayout chart1 = (RelativeLayout)findViewById(R.id.chart1);
-        try{
-            String femaleLabourPercentage = countries.getCountry(countryName).getLabour(year);
-            double femaleLabour = Double.parseDouble(femaleLabourPercentage);
-
-            double maleLabour = 100 - femaleLabour;
-            double[] labour = {maleLabour, femaleLabour};
-            chart1.removeAllViews();
-            createChart(NAME_LIST, labour, chart1, "Ratio of female to male labour force.");
-        }catch(NumberFormatException e){
-            e.printStackTrace();
-            addErrorMessage(1, chart1);
-        }
-
-        // Chart to show percentage of labour force which is female and male
-        RelativeLayout chart2 = (RelativeLayout)findViewById(R.id.chart2);
-        try{
-            String femaleEducationPercentage = countries.getCountry(countryName).getEducation(year);
-            double femaleEducation = Double.parseDouble(femaleEducationPercentage);
-
-            double maleEducation = 100 - femaleEducation;
-            double[] education = {maleEducation, femaleEducation};
-            chart2.removeAllViews();
-            createChart(NAME_LIST, education, chart2, "Ratio of female to male education.");
-        }catch(NumberFormatException e){
-            e.printStackTrace();
-            addErrorMessage(2, chart2);
-
-        }
-
-        // Chart to show percentage of labour force which is female and male
-        RelativeLayout chart3 = (RelativeLayout)findViewById(R.id.chart3);
-        try{
-            String femaleEmploymentPercentage = countries.getCountry(countryName).getPercentageFemale(year);
-            double femaleEmployment = Double.parseDouble(femaleEmploymentPercentage);
-
-            double maleEmployment = 100 - femaleEmployment;
-            double[] employment = {maleEmployment, femaleEmployment};
-            chart3.removeAllViews();
-            createChart(NAME_LIST, employment, chart3, "Ratio of female to male labour force.");
-        }catch(NumberFormatException e){
-            e.printStackTrace();
-            addErrorMessage(3, chart3);
-
-
-        }
-
-    }
-
+    /**
+     * Method is used to get a countries name using the latitude and longitude. Method doesn't return
+     * anything but updates the countryName variable which is important for other features of the app.
+     *
+     * Method is also used to change some of the countries name because of variations between the Google
+     * and WorldDataBank name for countries.
+     *
+     * @param latitude      the latitude
+     * @param longitude     the longitude
+     */
     public void getCountryName(double latitude, double longitude) {
         countryName = "";
 
@@ -354,27 +287,141 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    @Override
-    public void onMapClick(LatLng latLng) {
+    /**
+     * Creates multiple charts for the information layout.
+     * Method always updates immediately and if a chart is not drawn then a message
+     * is shown instead to warn the user about the missing data from the world bank.
+     *
+     * @param year  creates charts for year specified
+     */
+    private void createDougnutCharts(String year) {
+
+        TextView errorMessage = new TextView(this);
+
+        // Creats a chart to show labour ratios between female and male
+        RelativeLayout chart1 = (RelativeLayout)findViewById(R.id.chart1);
+        try{
+            String femaleLabourPercentage = countries.getCountry(countryName).getLabour(year);
+            double femaleLabour = Double.parseDouble(femaleLabourPercentage);
+
+            double maleLabour = 100 - femaleLabour;
+            double[] labour = {maleLabour, femaleLabour};
+            chart1.removeAllViews();
+            createChart(labour, chart1, "Ratio of female to male labour force.");
+        } catch(NumberFormatException e){
+            e.printStackTrace();
+            //addErrorMessage(1, chart1);
+            chart1.removeAllViews();
+            errorMessage.setText("Chart 1 doesn't have data for this year.");
+            chart1.addView(errorMessage);
+        }
+
+        // Chart to show percentage of labour force which is female and male
+        RelativeLayout chart2 = (RelativeLayout)findViewById(R.id.chart2);
+        try{
+            String femaleEducationPercentage = countries.getCountry(countryName).getEducation(year);
+            double femaleEducation = Double.parseDouble(femaleEducationPercentage);
+
+            double maleEducation = 100 - femaleEducation;
+            double[] education = {maleEducation, femaleEducation};
+            chart2.removeAllViews();
+            createChart(education, chart2, "Ratio of female to male education.");
+        } catch(NumberFormatException e){
+            e.printStackTrace();
+            //addErrorMessage(2, chart2);
+            chart2.removeAllViews();
+            errorMessage.setText("Chart 2 doesn't have data for this year.");
+            chart2.addView(errorMessage);
+
+        }
+
+        // Chart to show percentage of labour force which is female and male
+        RelativeLayout chart3 = (RelativeLayout)findViewById(R.id.chart3);
+        try{
+            String femaleEmploymentPercentage = countries.getCountry(countryName).getPercentageFemale(year);
+            double femaleEmployment = Double.parseDouble(femaleEmploymentPercentage);
+
+            double maleEmployment = 100 - femaleEmployment;
+            double[] employment = {maleEmployment, femaleEmployment};
+            chart3.removeAllViews();
+            createChart(employment, chart3, "Ratio of female to male labour force.");
+        } catch(NumberFormatException e){
+            e.printStackTrace();
+            //addErrorMessage(3, chart3);
+            chart3.removeAllViews();
+            errorMessage.setText("Chart 3 doesn't have data for this year.");
+            chart3.addView(errorMessage);
+        }
 
     }
 
-    private class seekYearChange implements SeekBar.OnSeekBarChangeListener {
+    /*
+    This method is used to create individual doughnut charts.
+     */
 
-        // for testing purposes only
-        TextView text = (TextView)findViewById(R.id.textView);
+    /**
+     * Creates individual charts for the information layout.
+     *
+     * @param population    an array of ratios for different series
+     * @param layout        a certain layout in which the chart will be drawn on
+     * @param title         a strin which has the title for the chart
+     */
+    public void createChart(double[] population, RelativeLayout layout, String title) {
 
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        int[] colors = new int[] {Color.rgb(255, 26, 25), Color.rgb(6, 95, 247)};
+        String[] categories = new String[] {"Male", "Female"};
 
-            text.setText(Integer.toString(YEAR_START + progress));
-            int year = YEAR_START + progress;
+        GraphicalView mChartView;
+        MultipleCategorySeries mSeries = new MultipleCategorySeries("");
+        DefaultRenderer mRenderer = new DefaultRenderer();
 
-            createDougnutCharts(year + "");
-            textCountryPopulation.setText(countries.getCountry(countryName).getPopulation(year + ""));
+        mSeries.add(categories, population);
+
+        for(int i = 0; i < population.length; i++) {
+            SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
+            seriesRenderer.setColor(colors[i]);
+            seriesRenderer.setDisplayBoundingPoints(true);
+            mRenderer.addSeriesRenderer(seriesRenderer);
         }
 
-        public void onStartTrackingTouch(SeekBar seekBar) {}
-        public void onStopTrackingTouch(SeekBar seekBar) {}
+        // Defining how the doughnut chart should look.
+        mRenderer.setPanEnabled(false);
+        mRenderer.setAntialiasing(true);
+        mRenderer.setZoomButtonsVisible(true);
+        mRenderer.setShowLabels(false);
+        mRenderer.setDisplayValues(true);
+        mRenderer.setShowLegend(false);
+        mRenderer.setZoomEnabled(false);
+        mRenderer.setBackgroundColor(Color.TRANSPARENT);
+        //mRenderer.setScale(0.5f);
+        mRenderer.setLabelsTextSize(15);
+        mRenderer.setChartTitle(title);
+        mRenderer.setChartTitleTextSize(20);
+
+        mChartView = ChartFactory.getDoughnutChartView(this, mSeries, mRenderer);
+        mChartView.repaint();
+        layout.addView(mChartView);
+    }
+
+    // Delete this method.
+    private void addErrorMessage(int index, RelativeLayout chart) {
+        TextView errorMessage = new TextView(this);
+
+        if(index == 1) {
+            chart.removeAllViews();
+            errorMessage.setText("Chart 1 doesn't have data for this year.");
+            chart.addView(errorMessage);
+        }
+        if(index == 2) {
+            chart.removeAllViews();
+            errorMessage.setText("Chart 2 doesn't have data for this year.");
+            chart.addView(errorMessage);
+        }
+        if(index == 3) {
+            chart.removeAllViews();
+            errorMessage.setText("Chart 3 doesn't have data for this year.");
+            chart.addView(errorMessage);
+        }
 
     }
 
