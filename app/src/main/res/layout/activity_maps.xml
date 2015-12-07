@@ -16,128 +16,156 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="false" />
 
-    <RelativeLayout
-        android:layout_width="400dp"
-        android:layout_height="match_parent"
-        android:id="@+id/layoutInformation"
-        android:layout_centerInParent="true"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentRight="true"
-        android:background="#ffffff">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.60">
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerCountry"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:background="#ffffff" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.40"
+            android:id="@+id/layoutInformation"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentRight="true"
+            android:background="#ffffff">
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/imageCountryFlag"
-                    android:src="@drawable/germany"
-                    android:layout_alignParentTop="true"
-                    android:onClick="closeButton" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Year"
-                    android:id="@+id/textYear" />
+                android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dip"
+                            android:layout_weight="0.33333"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="Country Name"
+                            android:id="@+id/textCountryName"
+                            android:layout_gravity="right" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dip"
+                            android:layout_weight="0.33333"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Country Capital"
+                            android:id="@+id/textCountryCapital"
+                            android:layout_gravity="right" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dip"
+                            android:layout_weight="0.33333"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Country Population"
+                            android:id="@+id/textCountryPopulation"
+                            android:layout_gravity="right" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="100dip"
+                        android:layout_height="100dp"
+                        android:id="@+id/imageCountryFlag"
+                        android:src="@drawable/germany"
+                        android:layout_alignParentTop="true"
+                        android:onClick="closeButton" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Country Name"
-                        android:id="@+id/textCountryName"
-                        android:layout_gravity="right" />
+                        android:text="Year"
+                        android:id="@+id/textYear" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Country Capital"
-                        android:id="@+id/textCountryCapital"
-                        android:layout_gravity="right" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Country Population"
-                        android:id="@+id/textCountryPopulation"
-                        android:layout_gravity="right" />
                 </LinearLayout>
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/seekBarYear" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/scrollView" >
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible">
+
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/layoutChart" >
+
+                            <RelativeLayout
+                                android:layout_width="0dip"
+                                android:layout_height="200dp"
+                                android:layout_weight="0.5"
+                                android:id="@+id/chart1"></RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="0dip"
+                                android:layout_height="200dp"
+                                android:layout_weight="0.5"
+                                android:id="@+id/chart2"></RelativeLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <RelativeLayout
+                                android:layout_width="0dip"
+                                android:layout_height="200dp"
+                                android:layout_weight="0.5"
+                                android:id="@+id/chart3"></RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="0dip"
+                                android:layout_height="200dp"
+                                android:layout_weight="0.5"
+                                android:id="@+id/chart4"></RelativeLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </ScrollView>
 
             </LinearLayout>
 
-            <SeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/seekBarYear" />
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:id="@+id/scrollView" >
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="visible">
-
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/layoutChart" >
-
-                        <RelativeLayout
-                            android:layout_width="200dp"
-                            android:layout_height="200dp"
-                            android:id="@+id/chart1"></RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="200dp"
-                            android:layout_height="200dp"
-                            android:id="@+id/chart2"></RelativeLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <RelativeLayout
-                            android:layout_width="200dp"
-                            android:layout_height="200dp"
-                            android:id="@+id/chart3"></RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="200dp"
-                            android:layout_height="200dp"
-                            android:id="@+id/chart4"></RelativeLayout>
-                    </LinearLayout>
-
-                </LinearLayout>
-            </ScrollView>
-
-        </LinearLayout>
-
-    </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>
