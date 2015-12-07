@@ -2,6 +2,7 @@ import android.os.Handler;
 
 import junit.framework.Assert;
 
+import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutionException;
@@ -11,7 +12,7 @@ import boysenberry.europe.Connector;
 /**
  * Created by Hassan on 05/12/2015.
  */
-public class ConnectorTest {
+public class ConnectorTest extends TestCase{
     Connector c = new Connector();
 
     @Test

@@ -74,6 +74,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startUp();
     }
 
+    public Context getAppContext(){
+        return getApplicationContext();
+    }
+
     //TO-DO kosovo isnt working
     @Override
     public void onMapReady(GoogleMap googleMap) {
