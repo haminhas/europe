@@ -49,7 +49,13 @@ import java.util.concurrent.ExecutionException;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
 
-    // TODO check if Kosovo is working and import all flags to res folder
+    // TODO check if Kosovo is working
+    // TODO add flags to res folder
+    // TODO add line chart
+    // TODO Remove pointer at germany
+    // TODO add population string before
+    // TODO make information layout invisible when app first starts
+    // TODO Country flag should be alligned to the right
 
     private Connector con;
     private String[] json;
@@ -73,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private final LatLng CENTER = new LatLng(57.75, 18);
     private final int YEAR_END = 2013;
-    private final int YEAR_START = 1990;
+    private final int YEAR_START = 1991;
 
      ArrayList<String> countryList = new ArrayList<>();
 
@@ -142,6 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         seekBar = (SeekBar) findViewById(R.id.seekBarYear);
         seekBar.setMax(YEAR_END - YEAR_START);
         seekBar.setOnSeekBarChangeListener(new seekYearChange());
+        seekBar.setVisibility(View.INVISIBLE);
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
@@ -178,6 +185,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             try {
                 countries = Data.getAllData(this.getApplicationContext());
+                // TODO remove google maps and set info layout to take up 70% of screen space
             } catch (RuntimeException e) {
                 Log.i("Runtime Exception", "Please connect to the internet");
             }
@@ -243,6 +251,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch(NullPointerException e) {
 
         }
+        seekBar.setVisibility(View.VISIBLE);
         textYear.setText("2013");
         seekBar.setProgress(2013);
 
@@ -403,7 +412,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             createChart(employment, chart3, "Ratio of female to male labour force.");
         } catch (NumberFormatException | NullPointerException e) {
             e.printStackTrace();
-            //addErrorMessage(3, chart3);
+
             chart3.removeAllViews();
             errorMessage.setText("Chart 3 doesn't have data for this year.");
             chart3.addView(errorMessage);
@@ -488,7 +497,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        seekBar.setProgress(2013);
 //
 //        createDougnutCharts("2013");
-        setFlag(country);
+//        setFlag(country);
     }
 
     /**
@@ -504,6 +513,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             createDougnutCharts(year + "");
             textYear.setText(year + "");
             textCountryPopulation.setText(countries.getCountry(countryName).getPopulation(year + ""));
+
         }
 
         @Override

@@ -31,7 +31,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/spinnerCountry"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:background="#ffffff" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -54,24 +55,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:layout_width="100dip"
-                        android:layout_height="100dp"
-                        android:id="@+id/imageCountryFlag"
-                        android:src="@drawable/germany"
-                        android:layout_alignParentTop="true"
-                        android:onClick="closeButton" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Year"
-                        android:id="@+id/textYear" />
-
                     <LinearLayout
                         android:orientation="vertical"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent">
 
                         <TextView
@@ -101,6 +87,21 @@
                             android:id="@+id/textCountryPopulation"
                             android:layout_gravity="right" />
                     </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="100dip"
+                        android:layout_height="100dp"
+                        android:id="@+id/imageCountryFlag"
+                        android:src="@drawable/germany"
+                        android:layout_alignParentTop="true"
+                        android:onClick="closeButton" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Year"
+                        android:id="@+id/textYear" />
 
                 </LinearLayout>
 
