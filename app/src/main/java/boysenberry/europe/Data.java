@@ -40,6 +40,10 @@ public class Data {
         writeToFile(countryName);          //calls a private method
     }
 
+    public static ArrayList<String> getCountries() {
+        return names;
+    }
+
     private static void writeToFile(String filename) {
         try {
             FileOutputStream outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
