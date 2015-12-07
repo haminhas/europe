@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -21,6 +20,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -34,12 +41,12 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.achartengine.ChartFactory;
-import org.achartengine.GraphicalView;
-import org.achartengine.model.MultipleCategorySeries;
-import org.achartengine.renderer.DefaultRenderer;
-import org.achartengine.renderer.SimpleSeriesRenderer;
-import org.w3c.dom.Text;
+//import org.achartengine.ChartFactory;
+//import org.achartengine.GraphicalView;
+//import org.achartengine.model.MultipleCategorySeries;
+//import org.achartengine.renderer.DefaultRenderer;
+//import org.achartengine.renderer.SimpleSeriesRenderer;
+//import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -82,7 +89,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final int YEAR_END = 2013;
     private final int YEAR_START = 1991;
 
-     ArrayList<String> countryList = new ArrayList<>();
+    ArrayList<String> countryList = new ArrayList<>();
+
+
+    // NEW
+    private PieChart mChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +166,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         seekBar = (SeekBar) findViewById(R.id.seekBarYear);
         seekBar.setMax(YEAR_END - YEAR_START);
         seekBar.setOnSeekBarChangeListener(new seekYearChange());
-        seekBar.setVisibility(View.INVISIBLE);
+//        seekBar.setVisibility(View.INVISIBLE);
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
@@ -317,120 +328,120 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String flag = country.toLowerCase();
         imageCountryFlag.setImageResource(getResources().getIdentifier(flag, "drawable", getPackageName()));
     }
-
-    /**
-     * Creates multiple charts for the information layout.
-     * Method always updates immediately and if a chart is not drawn then a message
-     * is shown instead to warn the user about the missing data from the world bank.
-     *
-     * @param year creates charts for year specified
-     */
-    private void createDougnutCharts(String year) {
-
-        TextView errorMessage = new TextView(this);
-
-        // Creats a chart to show labour ratios between female and male
-        RelativeLayout chart1 = (RelativeLayout) findViewById(R.id.chart1);
-        try {
-            String femaleLabourPercentage = countries.getCountry(countryName).getLabour(year);
-            double femaleLabour = Double.parseDouble(femaleLabourPercentage);
-
-            double maleLabour = 100 - femaleLabour;
-            double[] labour = {maleLabour, femaleLabour};
-            chart1.removeAllViews();
-            createChart(labour, chart1, "Ratio of female to male labour force.");
-        } catch (NumberFormatException | NullPointerException e) {
-            e.printStackTrace();
-
-            chart1.removeAllViews();
-            errorMessage.setText("Chart 1 doesn't have data for this year.");
-            chart1.addView(errorMessage);
-        }
-
-        // Chart to show percentage of labour force which is female and male
-        RelativeLayout chart2 = (RelativeLayout) findViewById(R.id.chart2);
-        try {
-            String femaleEducationPercentage = countries.getCountry(countryName).getEducation(year);
-            double femaleEducation = Double.parseDouble(femaleEducationPercentage);
-
-            double maleEducation = 100 - femaleEducation;
-            double[] education = {maleEducation, femaleEducation};
-            chart2.removeAllViews();
-            createChart(education, chart2, "Ratio of female to male education.");
-        } catch (NumberFormatException | NullPointerException e) {
-            e.printStackTrace();
-
-            chart2.removeAllViews();
-            errorMessage.setText("Chart 2 doesn't have data for this year.");
-            chart2.addView(errorMessage);
-
-        }
-
-        // Chart to show percentage of labour force which is female and male
-        RelativeLayout chart3 = (RelativeLayout) findViewById(R.id.chart3);
-        try {
-            String femaleEmploymentPercentage = countries.getCountry(countryName).getPercentageFemale(year);
-            double femaleEmployment = Double.parseDouble(femaleEmploymentPercentage);
-
-            double maleEmployment = 100 - femaleEmployment;
-            double[] employment = {maleEmployment, femaleEmployment};
-            chart3.removeAllViews();
-            createChart(employment, chart3, "Ratio of female to male labour force.");
-        } catch (NumberFormatException | NullPointerException e) {
-            e.printStackTrace();
-
-            chart3.removeAllViews();
-            errorMessage.setText("Chart 3 doesn't have data for this year.");
-            chart3.addView(errorMessage);
-        }
-
-    }
-
-    /**
-     * Creates individual doughnut charts for the information layout. Defines how a chart
-     * will look when drawn.
-     *
-     * @param population an array of ratios for different series
-     * @param layout     a certain layout in which the chart will be drawn on
-     * @param title      a strin which has the title for the chart
-     */
-    public void createChart(double[] population, RelativeLayout layout, String title) {
-
-        int[] colors = new int[]{Color.rgb(255, 26, 25), Color.rgb(6, 95, 247)};
-        String[] categories = new String[]{"Male", "Female"};
-
-        GraphicalView mChartView;
-        MultipleCategorySeries mSeries = new MultipleCategorySeries("");
-        DefaultRenderer mRenderer = new DefaultRenderer();
-
-        mSeries.add(categories, population);
-
-        for (int i = 0; i < population.length; i++) {
-            SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
-            seriesRenderer.setColor(colors[i]);
-            seriesRenderer.setDisplayBoundingPoints(true);
-            mRenderer.addSeriesRenderer(seriesRenderer);
-        }
-
-        // Defining how the doughnut chart should look.
-        mRenderer.setPanEnabled(false);
-        mRenderer.setAntialiasing(true);
-        mRenderer.setZoomButtonsVisible(true);
-        mRenderer.setShowLabels(false);
-        mRenderer.setDisplayValues(true);
-        mRenderer.setShowLegend(false);
-        mRenderer.setZoomEnabled(false);
-        mRenderer.setBackgroundColor(Color.TRANSPARENT);
-        //mRenderer.setScale(0.5f);
-        mRenderer.setLabelsTextSize(15);
-        mRenderer.setChartTitle(title);
-        mRenderer.setChartTitleTextSize(20);
-
-        mChartView = ChartFactory.getDoughnutChartView(this, mSeries, mRenderer);
-        mChartView.repaint();
-        layout.addView(mChartView);
-
-    }
+//
+//    /**
+//     * Creates multiple charts for the information layout.
+//     * Method always updates immediately and if a chart is not drawn then a message
+//     * is shown instead to warn the user about the missing data from the world bank.
+//     *
+//     * @param year creates charts for year specified
+//     */
+//    private void createDougnutCharts(String year) {
+//
+//        TextView errorMessage = new TextView(this);
+//
+//        // Creats a chart to show labour ratios between female and male
+//        RelativeLayout chart1 = (RelativeLayout) findViewById(R.id.chart1);
+//        try {
+//            String femaleLabourPercentage = countries.getCountry(countryName).getLabour(year);
+//            double femaleLabour = Double.parseDouble(femaleLabourPercentage);
+//
+//            double maleLabour = 100 - femaleLabour;
+//            double[] labour = {maleLabour, femaleLabour};
+//            chart1.removeAllViews();
+//            createChart(labour, chart1, "Ratio of female to male labour force.");
+//        } catch (NumberFormatException | NullPointerException e) {
+//            e.printStackTrace();
+//
+//            chart1.removeAllViews();
+//            errorMessage.setText("Chart 1 doesn't have data for this year.");
+//            chart1.addView(errorMessage);
+//        }
+//
+//        // Chart to show percentage of labour force which is female and male
+//        RelativeLayout chart2 = (RelativeLayout) findViewById(R.id.chart2);
+//        try {
+//            String femaleEducationPercentage = countries.getCountry(countryName).getEducation(year);
+//            double femaleEducation = Double.parseDouble(femaleEducationPercentage);
+//
+//            double maleEducation = 100 - femaleEducation;
+//            double[] education = {maleEducation, femaleEducation};
+//            chart2.removeAllViews();
+//            createChart(education, chart2, "Ratio of female to male education.");
+//        } catch (NumberFormatException | NullPointerException e) {
+//            e.printStackTrace();
+//
+//            chart2.removeAllViews();
+//            errorMessage.setText("Chart 2 doesn't have data for this year.");
+//            chart2.addView(errorMessage);
+//
+//        }
+//
+//        // Chart to show percentage of labour force which is female and male
+//        RelativeLayout chart3 = (RelativeLayout) findViewById(R.id.chart3);
+//        try {
+//            String femaleEmploymentPercentage = countries.getCountry(countryName).getPercentageFemale(year);
+//            double femaleEmployment = Double.parseDouble(femaleEmploymentPercentage);
+//
+//            double maleEmployment = 100 - femaleEmployment;
+//            double[] employment = {maleEmployment, femaleEmployment};
+//            chart3.removeAllViews();
+//            createChart(employment, chart3, "Ratio of female to male labour force.");
+//        } catch (NumberFormatException | NullPointerException e) {
+//            e.printStackTrace();
+//
+//            chart3.removeAllViews();
+//            errorMessage.setText("Chart 3 doesn't have data for this year.");
+//            chart3.addView(errorMessage);
+//        }
+//
+//    }
+//
+//    /**
+//     * Creates individual doughnut charts for the information layout. Defines how a chart
+//     * will look when drawn.
+//     *
+//     * @param population an array of ratios for different series
+//     * @param layout     a certain layout in which the chart will be drawn on
+//     * @param title      a strin which has the title for the chart
+//     */
+//    public void createChart(double[] population, RelativeLayout layout, String title) {
+//
+//        int[] colors = new int[]{Color.rgb(255, 26, 25), Color.rgb(6, 95, 247)};
+//        String[] categories = new String[]{"Male", "Female"};
+//
+//        GraphicalView mChartView;
+//        MultipleCategorySeries mSeries = new MultipleCategorySeries("");
+//        DefaultRenderer mRenderer = new DefaultRenderer();
+//
+//        mSeries.add(categories, population);
+//
+//        for (int i = 0; i < population.length; i++) {
+//            SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
+//            seriesRenderer.setColor(colors[i]);
+//            seriesRenderer.setDisplayBoundingPoints(true);
+//            mRenderer.addSeriesRenderer(seriesRenderer);
+//        }
+//
+//        // Defining how the doughnut chart should look.
+//        mRenderer.setPanEnabled(false);
+//        mRenderer.setAntialiasing(true);
+//        mRenderer.setZoomButtonsVisible(true);
+//        mRenderer.setShowLabels(false);
+//        mRenderer.setDisplayValues(true);
+//        mRenderer.setShowLegend(false);
+//        mRenderer.setZoomEnabled(false);
+//        mRenderer.setBackgroundColor(Color.TRANSPARENT);
+//        //mRenderer.setScale(0.5f);
+//        mRenderer.setLabelsTextSize(15);
+//        mRenderer.setChartTitle(title);
+//        mRenderer.setChartTitleTextSize(20);
+//
+//        mChartView = ChartFactory.getDoughnutChartView(this, mSeries, mRenderer);
+//        mChartView.repaint();
+//        layout.addView(mChartView);
+//
+//    }
 
     public void closeButton(View view) {
 
@@ -446,7 +457,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             int year = YEAR_START + progress;
 
-            createDougnutCharts(year + "");
+            // TODO pie chart
+            //createDougnutCharts(year + "");
+            updateInformationLayout(countryName, year);
             textYear.setText(year + "");
             textCountryPopulation.setText(countries.getCountry(countryName).getPopulation(year + ""));
         }
@@ -463,6 +476,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // On selecting a spinner item
             countryName = parent.getItemAtPosition(position).toString();
             //textCountryName.setText(countryName);
+
             updateInformationLayout(countryName, YEAR_END);
 
             // Showing selected spinner item
@@ -472,28 +486,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
     @Override
     public void onMapLongClick(LatLng latLng) {
 
-//        // removes previously placed marker.
-//        if (marker != null) {
-//            marker.remove();
-//        }// for testing purposes place marker
-//        marker = mMap.addMarker(new MarkerOptions().position(latLng).title(countryName).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
-//
-//        // Getting country name
-//        getCountryName(latLng.latitude, latLng.longitude);
-//
-//        textCountryName.setText(countryName.toUpperCase());
-//        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2013").toString());
-//        textCountryCapital.setText(countries.getCountry(countryName).getCapital());
-//        textYear.setText("2013");
-//        seekBar.setProgress(2013);
-//
-//        createDougnutCharts("2013");
-//
-//        layoutInformation.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -517,9 +512,179 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         textYear.setText(year + "");
         String yearChart  = year + "";
-        createDougnutCharts(yearChart);
-        seekBar.setVisibility(View.VISIBLE);
+        // TODO pie chart
+        //createDougnutCharts(yearChart);
         seekBar.setProgress(year);
+        seekBar.setVisibility(View.VISIBLE);
+
+        createAllCharts(yearChart);
+
+    }
+
+    private void createAllCharts(String year) {
+
+        TextView errorMessage = new TextView(this);
+
+        try {
+            mChart = (PieChart) findViewById(R.id.mChart1);
+            String femaleLabourPercentage = countries.getCountry(countryName).getLabour(year);
+            float femaleLabour = Float.parseFloat(femaleLabourPercentage);
+            float maleLabour = 100 - femaleLabour;
+            float[] labour = {maleLabour, femaleLabour};
+
+            ArrayList<Entry> yData = new ArrayList<>();
+            for (int i = 0; i < labour.length; i++) {
+                yData.add(new Entry(labour[i], i));
+            }
+
+            ArrayList<String> xValue = new ArrayList<>();
+            xValue.add("Male");
+            xValue.add("Female");
+
+            mChart.removeAllViews();
+            createPieChart(mChart, "Female Labour", yData, xValue);
+        } catch (NumberFormatException e) {
+            mChart.removeAllViews();
+            errorMessage.setText("Chart 1 doesn't have data for this year.");
+            mChart.addView(errorMessage);
+        }
+
+        try {
+            mChart = (PieChart) findViewById(R.id.mChart2);
+            String femaleEducationPercentage = countries.getCountry(countryName).getEducation(year);
+            float femaleEducation = Float.parseFloat(femaleEducationPercentage);
+            float maleEducation = 100 - femaleEducation;
+            float[] education = {maleEducation, femaleEducation};
+
+            ArrayList<Entry> yData = new ArrayList<>();
+            for (int i = 0; i < education.length; i++) {
+                yData.add(new Entry(education[i], i));
+            }
+
+            ArrayList<String> xValue = new ArrayList<>();
+            xValue.add("Male");
+            xValue.add("Female");
+
+            mChart.removeAllViews();
+            createPieChart(mChart, "Female Education", yData, xValue);
+        } catch (NumberFormatException e) {
+            mChart.removeAllViews();
+            errorMessage.setText("Chart 2 doesn't have data for this year.");
+            mChart.addView(errorMessage);
+        }
+
+        try {
+            mChart = (PieChart) findViewById(R.id.mChart3);
+            String femaleEmploymentPercentage = countries.getCountry(countryName).getPercentageFemale(year);
+            float femaleEmployment = Float.parseFloat(femaleEmploymentPercentage);
+            float maleEmployment = 100 - femaleEmployment;
+            float[] employment = {maleEmployment, femaleEmployment};
+
+            ArrayList<Entry> yData = new ArrayList<Entry>();
+            for(int i = 0; i < employment.length; i++) {
+                yData.add(new Entry(employment[i], i));
+            }
+
+            ArrayList<String> xValue = new ArrayList<>();
+            xValue.add("Male");
+            xValue.add("Female");
+
+            mChart.removeAllViews();
+            createPieChart(mChart, "Female Employment", yData, xValue);
+
+
+
+        } catch (NumberFormatException e) {
+            mChart.removeAllViews();
+            errorMessage.setText("Chart 3 doesn't have data for this year.");
+            mChart.addView(errorMessage);
+        }
+    }
+
+    // MPANDROIDCHART
+
+    private void createPieChart(PieChart chart, String title, ArrayList<Entry> yValue, ArrayList<String> xValue) {
+
+        mChart = new PieChart(this);
+        chart.addView(mChart);
+
+        chart.setBackgroundColor(Color.WHITE);
+
+        mChart.setUsePercentValues(true);
+        mChart.setDescription(title);
+        mChart.getLegend().setEnabled(false);
+
+        mChart.setDrawHoleEnabled(true);
+        mChart.setHoleColorTransparent(true);
+        mChart.setHoleRadius(20);
+        mChart.setTransparentCircleRadius(10);
+
+        mChart.setExtraOffsets(5, 10, 5, 5);
+        mChart.setCenterText("Hello");
+        mChart.setNoDataText("00");
+
+        mChart.setRotationAngle(0);
+        mChart.setRotationEnabled(true);
+
+        // TODO work this shit out
+        mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry entry, int i, Highlight highlight) {
+
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+
+        addDataToChart(yValue, xValue, title);
+
+
+    }
+
+    private void addDataToChart(ArrayList<Entry> yValue, ArrayList<String> xValue, String title) {
+
+        PieDataSet dataSet = new PieDataSet(yValue, title);
+        dataSet.setSliceSpace(3);
+        dataSet.setSelectionShift(5);
+
+        // add many colors TODO copied so change to our needs
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+
+//        colors.add(Color.BLUE);
+//        colors.add(Color.RED);
+
+        colors.add(ColorTemplate.getHoloBlue());
+        colors.add(Color.RED);
+//        for (int c : ColorTemplate.VORDIPLOM_COLORS)
+//            colors.add(c);
+//
+//        for (int c : ColorTemplate.JOYFUL_COLORS)
+//            colors.add(c);
+//
+//        for (int c : ColorTemplate.COLORFUL_COLORS)
+//            colors.add(c);
+//
+//        for (int c : ColorTemplate.LIBERTY_COLORS)
+//            colors.add(c);
+//
+//        for (int c : ColorTemplate.PASTEL_COLORS)
+//            colors.add(c);
+
+        colors.add(ColorTemplate.getHoloBlue());
+        dataSet.setColors(colors);
+
+        PieData data = new PieData(xValue, dataSet);
+        data.setValueFormatter(new PercentFormatter());
+        data.setValueTextSize(11f);
+        data.setValueTextColor(Color.GRAY);
+
+        mChart.setData(data);
+
+        mChart.highlightValue(null);
+        mChart.invalidate();
 
     }
 

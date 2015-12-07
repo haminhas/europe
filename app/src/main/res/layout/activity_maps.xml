@@ -122,6 +122,12 @@
                         android:visibility="visible">
 
 
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:layout_width="fill_parent"
+                            android:layout_height="300dp"
+                            android:id="@+id/mChart2"
+                            android:layout_weight="30" />
+
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="fill_parent"
@@ -129,17 +135,12 @@
                             android:layout_weight="1"
                             android:id="@+id/layoutChart" >
 
-                            <RelativeLayout
+                            <com.github.mikephil.charting.charts.PieChart
                                 android:layout_width="0dip"
-                                android:layout_height="200dp"
-                                android:layout_weight="0.5"
-                                android:id="@+id/chart1"></RelativeLayout>
+                                android:layout_height="300dp"
+                                android:id="@+id/mChart1"
+                                android:layout_weight="30" />
 
-                            <RelativeLayout
-                                android:layout_width="0dip"
-                                android:layout_height="200dp"
-                                android:layout_weight="0.5"
-                                android:id="@+id/chart2"></RelativeLayout>
                         </LinearLayout>
 
                         <LinearLayout
@@ -147,17 +148,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <RelativeLayout
+                            <com.github.mikephil.charting.charts.PieChart
                                 android:layout_width="0dip"
-                                android:layout_height="200dp"
-                                android:layout_weight="0.5"
-                                android:id="@+id/chart3"></RelativeLayout>
-
-                            <RelativeLayout
-                                android:layout_width="0dip"
-                                android:layout_height="200dp"
-                                android:layout_weight="0.5"
-                                android:id="@+id/chart4"></RelativeLayout>
+                                android:layout_height="300dp"
+                                android:id="@+id/mChart3"
+                                android:layout_weight="30" />
                         </LinearLayout>
 
                     </LinearLayout>
