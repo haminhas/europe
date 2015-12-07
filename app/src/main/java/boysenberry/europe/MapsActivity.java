@@ -12,6 +12,7 @@ import android.provider.Telephony;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -144,6 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //spinnerCountries.addChildrenForA;
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, countryList);
         spinnerCountries.setAdapter(adapter);
+        spinnerCountries.setOnItemSelectedListener(new spinnerListener());
 
         seekBar = (SeekBar) findViewById(R.id.seekBarYear);
         seekBar.setMax(YEAR_END - YEAR_START);
@@ -186,6 +188,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             try {
                 countries = Data.getAllData(this.getApplicationContext());
                 // TODO remove google maps and set info layout to take up 70% of screen space
+                RelativeLayout layoutSpinner = (RelativeLayout)findViewById(R.id.layoutSpinner);
+                layoutSpinner.setHorizontalGravity(50);
+                layoutInformation.setHorizontalGravity(50);
             } catch (RuntimeException e) {
                 Log.i("Runtime Exception", "Please connect to the internet");
             }
@@ -216,50 +221,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    @Override
-    public void onMapLongClick(LatLng latLng) {
-
-//        // removes previously placed marker.
-//        if (marker != null) {
-//            marker.remove();
-//        }// for testing purposes place marker
-//        marker = mMap.addMarker(new MarkerOptions().position(latLng).title(countryName).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
-//
-//        // Getting country name
-//        getCountryName(latLng.latitude, latLng.longitude);
-//
-//        textCountryName.setText(countryName.toUpperCase());
-//        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2013").toString());
-//        textCountryCapital.setText(countries.getCountry(countryName).getCapital());
-//        textYear.setText("2013");
-//        seekBar.setProgress(2013);
-//
-//        createDougnutCharts("2013");
-//
-//        layoutInformation.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onMapClick(LatLng latLng) {
-        // Getting country name
-        getCountryName(latLng.latitude, latLng.longitude);
-
-        textCountryName.setText(countryName.toUpperCase());
-        try {
-            textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2013").toString());
-            textCountryCapital.setText(countries.getCountry(countryName).getCapital());
-        } catch(NullPointerException e) {
-
-        }
-        seekBar.setVisibility(View.VISIBLE);
-        textYear.setText("2013");
-        seekBar.setProgress(2013);
-
-        createDougnutCharts("2013");
-        //setFlag();
-
-        layoutInformation.setVisibility(View.VISIBLE);
-    }
 
     /**
      * Method is used to get a countries name using the latitude and longitude. Method doesn't return
@@ -375,7 +336,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             createChart(labour, chart1, "Ratio of female to male labour force.");
         } catch (NumberFormatException | NullPointerException e) {
             e.printStackTrace();
-            //addErrorMessage(1, chart1);
+
             chart1.removeAllViews();
             errorMessage.setText("Chart 1 doesn't have data for this year.");
             chart1.addView(errorMessage);
@@ -393,7 +354,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             createChart(education, chart2, "Ratio of female to male education.");
         } catch (NumberFormatException | NullPointerException e) {
             e.printStackTrace();
-            //addErrorMessage(2, chart2);
+
             chart2.removeAllViews();
             errorMessage.setText("Chart 2 doesn't have data for this year.");
             chart2.addView(errorMessage);
@@ -421,7 +382,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Creates individual doughnut charts for the information layout.
+     * Creates individual doughnut charts for the information layout. Defines how a chart
+     * will look when drawn.
      *
      * @param population an array of ratios for different series
      * @param layout     a certain layout in which the chart will be drawn on
@@ -462,42 +424,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChartView = ChartFactory.getDoughnutChartView(this, mSeries, mRenderer);
         mChartView.repaint();
         layout.addView(mChartView);
-    }
 
-    // Delete this method.
-    private void addErrorMessage(int index, RelativeLayout chart) {
-        TextView errorMessage = new TextView(this);
-
-        if (index == 1) {
-            chart.removeAllViews();
-            errorMessage.setText("Chart 1 doesn't have data for this year.");
-            chart.addView(errorMessage);
-        }
-        if (index == 2) {
-            chart.removeAllViews();
-            errorMessage.setText("Chart 2 doesn't have data for this year.");
-            chart.addView(errorMessage);
-        }
-        if (index == 3) {
-            chart.removeAllViews();
-            errorMessage.setText("Chart 3 doesn't have data for this year.");
-            chart.addView(errorMessage);
-        }
     }
 
     public void closeButton(View view) {
-        //layoutInformation.setVisibility(View.INVISIBLE);
 
-        String country = "unitedkingdom";
-
-        textCountryName.setText(country);
-//        textCountryPopulation.setText(countries.getCountry(country).getPopulation("2013").toString());
-//        textCountryCapital.setText(countries.getCountry(country).getCapital());
-//        textYear.setText("2013");
-//        seekBar.setProgress(2013);
-//
-//        createDougnutCharts("2013");
-//        setFlag(country);
     }
 
     /**
@@ -513,16 +444,77 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             createDougnutCharts(year + "");
             textYear.setText(year + "");
             textCountryPopulation.setText(countries.getCountry(countryName).getPopulation(year + ""));
-
         }
+
+        @Override   public void onStartTrackingTouch(SeekBar seekBar) {}
+        @Override   public void onStopTrackingTouch(SeekBar seekBar) {}
+
+    }
+
+    private class spinnerListener implements AdapterView.OnItemSelectedListener {
 
         @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-        }
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            // On selecting a spinner item
+            countryName = parent.getItemAtPosition(position).toString();
+            //textCountryName.setText(countryName);
+            updateInformationLayout(countryName, YEAR_END);
 
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
+            // Showing selected spinner item
+            //Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
         }
+        public void onNothingSelected(AdapterView<?> arg0) {}
+
+    }
+
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+
+//        // removes previously placed marker.
+//        if (marker != null) {
+//            marker.remove();
+//        }// for testing purposes place marker
+//        marker = mMap.addMarker(new MarkerOptions().position(latLng).title(countryName).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+//
+//        // Getting country name
+//        getCountryName(latLng.latitude, latLng.longitude);
+//
+//        textCountryName.setText(countryName.toUpperCase());
+//        textCountryPopulation.setText(countries.getCountry(countryName).getPopulation("2013").toString());
+//        textCountryCapital.setText(countries.getCountry(countryName).getCapital());
+//        textYear.setText("2013");
+//        seekBar.setProgress(2013);
+//
+//        createDougnutCharts("2013");
+//
+//        layoutInformation.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+
+        getCountryName(latLng.latitude, latLng.longitude);
+        updateInformationLayout(countryName, YEAR_END);
+
+        layoutInformation.setVisibility(View.VISIBLE);
+
+    }
+
+    private void updateInformationLayout(String country, int year) {
+
+        textCountryName.setText(country);
+        try {
+            textCountryPopulation.setText(countries.getCountry(country).getPopulation(year + "").toString());
+            textCountryCapital.setText(countries.getCountry(country).getCapital());
+        } catch(NullPointerException e) {
+
+        }
+        textYear.setText(year + "");
+        String yearChart  = year + "";
+        createDougnutCharts(yearChart);
+        seekBar.setVisibility(View.VISIBLE);
+        seekBar.setProgress(year);
 
     }
 
