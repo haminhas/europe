@@ -80,6 +80,15 @@ public class Data {
         return sBuild.toString();
     }
 
+    public static boolean isNull(Context context){
+        Boolean b = false;
+            String data = Data.getData(context, names.get(0));
+            if (data == null){
+                b = true;
+            }
+        return b;
+    }
+
     /**
      * Reads data from internal storage, and returns a collection of countries.
      *
