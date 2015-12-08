@@ -469,7 +469,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             errorMessage.setText("Chart 3 doesn't have data for this year.");
-            //mChart.addView(errorMessage);
         }
     }
 
