@@ -7,7 +7,6 @@ import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -34,7 +33,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -42,13 +40,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
 
 
     // TODO add line chart
@@ -72,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView textCountryPopulation;
     private TextView textCountryCapital;
     private TextView textYear;
+    private TextView textYear1;
     private Spinner spinnerCountries;
 
     private Countries countries;
@@ -100,7 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public Context getAppContext(){
+    public Context getAppContext() {
         return getApplicationContext();
     }
 
@@ -142,8 +141,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textCountryPopulation = (TextView) findViewById(R.id.textCountryPopulation);
         textCountryCapital = (TextView) findViewById(R.id.textCountryCapital);
         textYear = (TextView) findViewById(R.id.textYear);
+        textYear1 = (TextView) findViewById(R.id.textYear1);
         imageCountryFlag = (ImageView) findViewById(R.id.imageCountryFlag);
-
 
 
         spinnerCountries = (Spinner) findViewById(R.id.spinnerCountry);
@@ -162,7 +161,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void checkNetwork() {
         if (isNetworkConnected(this)) {
-            if (Data.isNull(this.getApplicationContext())){
+            if (Data.isNull(this.getApplicationContext())) {
                 Log.i("tag", "work");
                 String country = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR?per_page=100&format=json";
                 String female = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SL.EMP.TOTL.SP.FE.ZS?format=json&date=1990:2013&per_page=10000";
@@ -193,8 +192,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 countries = p.getCountries();
                 JSONparser p0 = new JSONparser();
 
-            } else{
-               data();
+            } else {
+                data();
             }
 
         } else {
@@ -202,11 +201,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void data (){
+    private void data() {
         try {
             countries = Data.getAllData(this.getApplicationContext());
             // TODO remove google maps and set info layout to take up 70% of screen space
-            RelativeLayout layoutSpinner = (RelativeLayout)findViewById(R.id.layoutSpinner);
+            RelativeLayout layoutSpinner = (RelativeLayout) findViewById(R.id.layoutSpinner);
             layoutSpinner.setHorizontalGravity(50);
             layoutInformation.setHorizontalGravity(50);
         } catch (RuntimeException e) {
@@ -263,14 +262,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Address address;
 
-        try{
+        try {
             address = addresses.get(0);
             if (address != null) {
                 for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
                     countryName = address.getCountryName();
                 }
             }
-        }catch(IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             Toast.makeText(getApplicationContext(), "Click on a country you fool", Toast.LENGTH_SHORT).show();
             countryName = "United Kingdom";
         }
@@ -304,25 +303,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //    "Netherlands", "Norway", "Poland", "Portugal", "Romania", "Russian Federation", "San Marino", "Serbia",
 //    "Slovak Republic", "Slovenia", "Sweden", "Turkey", "Ukraine"};
 
-        if(country.equals("Bosnia and Herzegovina")) {
+        if (country.equals("Bosnia and Herzegovina")) {
             country = "bosniaandherzegovina";
-        }
-        else if(country.equals("Czech Republic")) {
+        } else if (country.equals("Czech Republic")) {
             country = "czechrepublic";
-        }
-        else if(country.equals("United Kingdom")) {
+        } else if (country.equals("United Kingdom")) {
             country = "unitedkingdom";
-        }
-        else if(country.equals("Macedonia, FYR")) {
+        } else if (country.equals("Macedonia, FYR")) {
             country = "macedoniafyr";
-        }
-        else if(country.equals("Russian Federation")) {
+        } else if (country.equals("Russian Federation")) {
             country = "russia";
-        }
-        else if(country.equals("San Marino")) {
+        } else if (country.equals("San Marino")) {
             country = "sanmarino";
-        }
-        else if(country.equals("Slovak Republic")) {
+        } else if (country.equals("Slovak Republic")) {
             country = "slovak";
         }
 
@@ -343,12 +336,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // TODO pie chart
             //createDougnutCharts(year + "");
             updateInformationLayout(countryName, year);
-            textYear.setText(year + "");
+            textYear.setText("The data shown below is for the year of " + year);
+            textYear1.setText(year + ":");
             textCountryPopulation.setText(countries.getCountry(countryName).getPopulation(year + ""));
         }
 
-        @Override   public void onStartTrackingTouch(SeekBar seekBar) {}
-        @Override   public void onStopTrackingTouch(SeekBar seekBar) {}
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
 
     }
 
@@ -367,7 +366,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Showing selected spinner item
             //Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
         }
-        public void onNothingSelected(AdapterView<?> arg0) {}
+
+        public void onNothingSelected(AdapterView<?> arg0) {
+        }
 
     }
 
@@ -392,11 +393,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             textCountryPopulation.setText(countries.getCountry(country).getPopulation(year + "").toString());
             textCountryCapital.setText(countries.getCountry(country).getCapital());
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
 
         }
-        textYear.setText(year + "");
-        String yearChart  = year + "";
+        textYear.setText("The data shown below is for the year of " +year);
+        textYear1.setText(year + ":");
+        String yearChart = year + "";
         // TODO pie chart
         //createDougnutCharts(yearChart);
         seekBar.setVisibility(View.VISIBLE);
@@ -456,13 +458,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             float[] employment = {maleEmployment, femaleEmployment};
 
             ArrayList<Entry> yData = new ArrayList<Entry>();
-            for(int i = 0; i < employment.length; i++) {
+            for (int i = 0; i < employment.length; i++) {
                 yData.add(new Entry(employment[i], i));
             }
 
             createPieChart(mChart, "Female Employment", yData);
             mChart.invalidate();
-
 
 
         } catch (NumberFormatException e) {

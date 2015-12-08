@@ -2,4 +2,6 @@
     <string name="app_name">Europe</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
+    <string name="the_following_data">The data shown below is for year  </string>
+    <string name="data_provided">Data provided by www.worldbank.org</string>
 </resources>
