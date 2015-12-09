@@ -28,11 +28,12 @@
             android:id="@+id/layoutSpinner">
 
             <Spinner
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/spinnerCountry"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
+                android:prompt="@string/countries"
                 android:background="#ffffff" />
         </RelativeLayout>
 
@@ -44,7 +45,8 @@
             android:layout_centerInParent="true"
             android:layout_alignParentLeft="false"
             android:layout_alignParentRight="true"
-            android:background="#ffffff">
+            android:background="#F8F8F2"
+            android:alpha="0.95">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -52,8 +54,9 @@
                 android:layout_height="match_parent">
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#6F3662">
 
                     <ImageView
                         android:layout_width="100dip"
@@ -99,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="Year"
-                        android:id="@+id/textYear1"
+                        android:id="@+id/textYear"
                         android:layout_below="@+id/textCountryCapital"
                         android:layout_toRightOf="@+id/population" />
 
@@ -114,6 +117,25 @@
                         android:layout_below="@+id/population"
                         android:layout_toRightOf="@+id/imageCountryFlag" />
 
+                    <ImageView
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imageView"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/couple"
+                        android:layout_above="@+id/textCountryPopulation" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Small Text"
+                        android:id="@+id/ratio"
+                        android:layout_below="@+id/imageView"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginRight="35dp" />
+
                 </RelativeLayout>
 
                 <SeekBar
@@ -121,41 +143,29 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/seekBarYear" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Year"
-                    android:id="@+id/textYear"
-                    android:layout_below="@+id/imageCountryFlag" />
-
                 <ScrollView
-                    android:layout_width="match_parent"
+                    android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:id="@+id/scrollView" >
 
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="visible">
-
+                        android:layout_height="match_parent">
 
                         <com.github.mikephil.charting.charts.PieChart
                             android:layout_width="match_parent"
-                            android:layout_height="300dp"
+                            android:layout_height="250dp"
                             android:id="@+id/mChart1" />
 
                         <LinearLayout
                             android:orientation="horizontal"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:id="@+id/layoutChart" >
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
                             <com.github.mikephil.charting.charts.PieChart
                                 android:layout_width="0dip"
-                                android:layout_height="300dp"
+                                android:layout_height="200dp"
                                 android:id="@+id/mChart2"
                                 android:layout_weight="50" />
 
@@ -166,17 +176,10 @@
 
                                 <com.github.mikephil.charting.charts.PieChart
                                     android:layout_width="match_parent"
-                                    android:layout_height="300dp"
+                                    android:layout_height="200dp"
                                     android:id="@+id/mChart3"
                                     android:layout_weight="50" />
                             </RelativeLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
                         </LinearLayout>
 
                         <TextView
@@ -189,10 +192,7 @@
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true" />
-
                     </LinearLayout>
-
-
                 </ScrollView>
 
             </LinearLayout>

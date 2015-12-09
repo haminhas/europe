@@ -2,12 +2,14 @@ package boysenberry.europe;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewParentCompatICS;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,6 +41,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView textCountryCapital;
     private TextView textYear;
     private TextView textYear1;
+    private TextView textRatio;
 
     private Countries countries;
     private String countryName;
@@ -136,12 +141,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textCountryPopulation = (TextView) findViewById(R.id.textCountryPopulation);
         textCountryCapital = (TextView) findViewById(R.id.textCountryCapital);
         textYear = (TextView) findViewById(R.id.textYear);
-        textYear1 = (TextView) findViewById(R.id.textYear1);
+        textYear1 = (TextView) findViewById(R.id.textYear);
+        TextView population = (TextView) findViewById(R.id.population);
         imageCountryFlag = (ImageView) findViewById(R.id.imageCountryFlag);
+        textRatio = (TextView) findViewById(R.id.ratio);
+
+        textCountryName.setTextColor(Color.WHITE);
+        textCountryPopulation.setTextColor(Color.WHITE);
+        textCountryCapital.setTextColor(Color.WHITE);
+        textYear.setTextColor(Color.WHITE);
+        textYear1.setTextColor(Color.WHITE);
+        population.setTextColor(Color.WHITE);
+        textRatio.setTextColor(Color.WHITE);
 
 
         Spinner spinnerCountries = (Spinner) findViewById(R.id.spinnerCountry);
-        //spinnerCountries.addChildrenForA;
+        spinnerCountries.setDropDownHorizontalOffset(5);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, countryList);
         spinnerCountries.setAdapter(adapter);
         spinnerCountries.setOnItemSelectedListener(new spinnerListener());
@@ -401,6 +417,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             textCountryPopulation.setText(countries.getCountry(country).getPopulation(year + ""));
             textCountryCapital.setText(countries.getCountry(country).getCapital());
+            String ratioFemalePercentage = countries.getCountry(country).getFemalePopulation(year+"");
+            Float ratioFemale = Float.parseFloat(ratioFemalePercentage);
+            Float ratioMale = 100 - ratioFemale;
+            String display = (int)Math.ceil(ratioMale) + " : " + (int)Math.ceil(ratioFemale);
+            textRatio.setText(display);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -416,8 +437,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void createAllCharts(String year) {
 
-        TextView errorMessage = new TextView(this);
-
         try {
             mChart = (PieChart) findViewById(R.id.mChart1);
             String femaleLabourPercentage = countries.getCountry(countryName).getLabour(year);
@@ -430,12 +449,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 yData.add(new Entry(labour[i], i));
             }
 
-            createPieChart(mChart, "Female Labour", yData);
+            mChart.removeAllViews();
             mChart.invalidate();
+            createPieChart(mChart, "Female Labour", yData);
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
-            errorMessage.setText("Chart 1 doesn't have data for this year.");
-            //mChart.addView(errorMessage);
+            //mChart.setNoDataTextDescription("Chart 1 doesn't have data for this year.");
+
         }
 
         try {
@@ -450,12 +470,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 yData.add(new Entry(education[i], i));
             }
 
+            mChart.removeAllViews();
             createPieChart(mChart, "Female Education", yData);
             mChart.invalidate();
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
-            errorMessage.setText("Chart 2 doesn't have data for this year.");
-            //mChart.addView(errorMessage);
+            //mChart.setNoDataTextDescription("Chart 2 doesn't have data for this year.");
         }
 
         try {
@@ -474,15 +494,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mChart.removeAllViews();
             createPieChart(mChart, "Female Employment", yData);
 
-            TextView textView2 = (TextView) findViewById(R.id.textView2);
-            textView2.setText(femaleEmploymentPercentage);
 
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
-//            errorMessage.setText("Chart 3 doesn't have data for this year.");
+            //mChart.setNoDataTextDescription("Chart 3 doesn't have data for this year.");
         }
 
-        //createAnotherChart(year);
 
 
     }
@@ -500,7 +517,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChart = new PieChart(this);
         chart.addView(mChart);
 
-        chart.setBackgroundColor(Color.WHITE);
+        chart.setBackgroundColor(Color.TRANSPARENT);
 
         mChart.setUsePercentValues(true);
         mChart.setDescription(title);
@@ -512,8 +529,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChart.setTransparentCircleRadius(10);
 
         mChart.setExtraOffsets(5, 10, 5, 5);
-        mChart.setCenterText("Hello");
-        mChart.setNoDataText("00");
+        mChart.setNoDataTextDescription(null);
 
         mChart.setRotationAngle(0);
         mChart.setRotationEnabled(true);
@@ -544,15 +560,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         ArrayList<Integer> colors = new ArrayList<>();
 
-        colors.add(ColorTemplate.getHoloBlue());
-        colors.add(Color.RED);
-        colors.add(ColorTemplate.getHoloBlue());
+        //colors.add(ColorTemplate.getHoloBlue());
+        //colors.add(Color.RED);
+
+//        colors.add(Color.rgb(74, 150, 173));
+//        colors.add(Color.rgb(236, 236, 234));
+
+        colors.add(Color.rgb(255, 174, 93));
+        colors.add(Color.rgb(248, 222, 189));
+
+
         dataSet.setColors(colors);
 
         PieData data = new PieData(xValue, dataSet);
         data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.GRAY);
+        data.setValueTextSize(15f);
+
+        data.setValueTextColor(Color.rgb(111, 54, 98));
+        data.setValueTextColor(Color.rgb(198, 61, 15));
+
 
         mChart.setData(data);
 
