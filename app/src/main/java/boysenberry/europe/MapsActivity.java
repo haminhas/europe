@@ -39,6 +39,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -451,25 +453,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         try {
+
             mChart = (PieChart) findViewById(R.id.mChart3);
             String femaleEmploymentPercentage = countries.getCountry(countryName).getPercentageFemale(year);
             float femaleEmployment = Float.parseFloat(femaleEmploymentPercentage);
             float maleEmployment = 100 - femaleEmployment;
             float[] employment = {maleEmployment, femaleEmployment};
 
-            ArrayList<Entry> yData = new ArrayList<Entry>();
-            for (int i = 0; i < employment.length; i++) {
+            ArrayList<Entry> yData = new ArrayList<>();
+            for (int i = 0; i < 2; i++) {
                 yData.add(new Entry(employment[i], i));
             }
 
+            mChart.removeAllViews();
             createPieChart(mChart, "Female Employment", yData);
-            mChart.invalidate();
 
+            TextView textView2 = (TextView) findViewById(R.id.textView2);
+            textView2.setText(femaleEmploymentPercentage);
 
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
-            errorMessage.setText("Chart 3 doesn't have data for this year.");
+//            errorMessage.setText("Chart 3 doesn't have data for this year.");
         }
+
+        //createAnotherChart(year);
+
+
+    }
+
+    public void createAnotherChart(String year) {
     }
 
 

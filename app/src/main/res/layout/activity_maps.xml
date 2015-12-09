@@ -142,10 +142,9 @@
 
 
                         <com.github.mikephil.charting.charts.PieChart
-                            android:layout_width="fill_parent"
+                            android:layout_width="match_parent"
                             android:layout_height="300dp"
-                            android:id="@+id/mChart2"
-                            android:layout_weight="30" />
+                            android:id="@+id/mChart1" />
 
                         <LinearLayout
                             android:orientation="horizontal"
@@ -157,9 +156,20 @@
                             <com.github.mikephil.charting.charts.PieChart
                                 android:layout_width="0dip"
                                 android:layout_height="300dp"
-                                android:id="@+id/mChart1"
-                                android:layout_weight="30" />
+                                android:id="@+id/mChart2"
+                                android:layout_weight="50" />
 
+                            <RelativeLayout
+                                android:layout_width="0dip"
+                                android:layout_height="match_parent"
+                                android:layout_weight="50">
+
+                                <com.github.mikephil.charting.charts.PieChart
+                                    android:layout_width="match_parent"
+                                    android:layout_height="300dp"
+                                    android:id="@+id/mChart3"
+                                    android:layout_weight="50" />
+                            </RelativeLayout>
                         </LinearLayout>
 
                         <LinearLayout
@@ -167,11 +177,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <com.github.mikephil.charting.charts.PieChart
-                                android:layout_width="0dip"
-                                android:layout_height="300dp"
-                                android:id="@+id/mChart3"
-                                android:layout_weight="30" />
                         </LinearLayout>
 
                         <TextView
