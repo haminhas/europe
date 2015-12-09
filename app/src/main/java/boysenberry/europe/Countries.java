@@ -30,11 +30,13 @@ public class Countries {
     }
 
     public Country getCountry(String s) {
+        Country x = null;
         for (Country c: list) {
             if (s.equals(c.getName())) {
-                return c;
+                x =c;
+                break;
             }
         }
-        return null;
+        return x;
     }
 }
