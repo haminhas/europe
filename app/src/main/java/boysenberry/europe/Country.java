@@ -93,7 +93,7 @@ public class Country {
     private String getDataPerYear(String year, ArrayList<String> arrayList) {
         for (String data : arrayList) {
             List<String> oneYear = Arrays.asList(data.split(","));
-            Log.i("TEST","yearGiven"+year+"yearInArray"+oneYear.get(1));
+            Log.i("TEST", "yearGiven" + year + "yearInArray" + oneYear.get(1));
             if (oneYear.get(1).contains(year))
                 return oneYear.get(0);
         }

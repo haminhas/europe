@@ -80,12 +80,12 @@ public class Data {
         return sBuild.toString();
     }
 
-    public static boolean isNull(Context context){
+    public static boolean isNull(Context context) {
         Boolean b = false;
-            String data = Data.getData(context, names.get(0));
-            if (data == null){
-                b = true;
-            }
+        String data = Data.getData(context, names.get(0));
+        if (data == null) {
+            b = true;
+        }
         return b;
     }
 
@@ -113,8 +113,10 @@ public class Data {
                 else if (i < 51)
                     co.addFemalePopulation(lines.get(i));
                 else if (i < 75)
-                    co.addEducation(lines.get(i));
+                    co.addFemalePercentage(lines.get(i));
                 else if (i < 99)
+                    co.addEducation(lines.get(i));
+                else if (i < 123)
                     co.addlabour(lines.get(i));
             }
             c.add(co);

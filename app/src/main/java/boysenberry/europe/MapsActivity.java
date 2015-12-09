@@ -39,8 +39,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,10 +55,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // TODO make information layout invisible when app first starts
     // TODO Country flag should be alligned to the right
 
-    private Connector con;
-    private String[] json;
-
-    private GoogleApiClient client;
     private Geocoder geocoder;
     private Marker marker;
 
@@ -73,7 +67,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView textCountryCapital;
     private TextView textYear;
     private TextView textYear1;
-    private Spinner spinnerCountries;
 
     private Countries countries;
     private String countryName;
@@ -147,9 +140,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         imageCountryFlag = (ImageView) findViewById(R.id.imageCountryFlag);
 
 
-        spinnerCountries = (Spinner) findViewById(R.id.spinnerCountry);
+        Spinner spinnerCountries = (Spinner) findViewById(R.id.spinnerCountry);
         //spinnerCountries.addChildrenForA;
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, countryList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, countryList);
         spinnerCountries.setAdapter(adapter);
         spinnerCountries.setOnItemSelectedListener(new spinnerListener());
 
@@ -158,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         seekBar.setOnSeekBarChangeListener(new seekYearChange());
 //        seekBar.setVisibility(View.INVISIBLE);
 
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        GoogleApiClient client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void checkNetwork() {
@@ -173,8 +166,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 String labour = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SL.TLF.TOTL.FE.ZS?format=json&date=1990:2013&per_page=10000";
 
                 String[] ar = {country, female, population, fpop, education, labour};
-                con = new Connector();
-                json = new String[6];
+                Connector con = new Connector();
+                String[] json = new String[6];
                 try {
                     json = con.execute(ar).get();
                 } catch (InterruptedException | ExecutionException e) {
@@ -276,14 +269,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             countryName = "United Kingdom";
         }
 
-        if (countryName.equals("Macedonia (FYROM)")) {
-            countryName = "Macedonia, FYR";
-        } else if (countryName.equals("Kosova (Kosovo)")) {
-            countryName = "Kosovo";
-        } else if (countryName.equals("Slovakia")) {
-            countryName = "Slovak Republic";
-        } else if (countryName.equals("Russia")) {
-            countryName = "Russian Federation";
+        switch (countryName) {
+            case "Macedonia (FYROM)":
+                countryName = "Macedonia, FYR";
+                break;
+            case "Kosova (Kosovo)":
+                countryName = "Kosovo";
+                break;
+            case "Slovakia":
+                countryName = "Slovak Republic";
+                break;
+            case "Russia":
+                countryName = "Russian Federation";
+                break;
         }
 
     }
@@ -305,20 +303,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //    "Netherlands", "Norway", "Poland", "Portugal", "Romania", "Russian Federation", "San Marino", "Serbia",
 //    "Slovak Republic", "Slovenia", "Sweden", "Turkey", "Ukraine"};
 
-        if (country.equals("Bosnia and Herzegovina")) {
-            country = "bosniaandherzegovina";
-        } else if (country.equals("Czech Republic")) {
-            country = "czechrepublic";
-        } else if (country.equals("United Kingdom")) {
-            country = "unitedkingdom";
-        } else if (country.equals("Macedonia, FYR")) {
-            country = "macedoniafyr";
-        } else if (country.equals("Russian Federation")) {
-            country = "russia";
-        } else if (country.equals("San Marino")) {
-            country = "sanmarino";
-        } else if (country.equals("Slovak Republic")) {
-            country = "slovak";
+        switch (country) {
+            case "Bosnia and Herzegovina":
+                country = "bosniaandherzegovina";
+                break;
+            case "Czech Republic":
+                country = "czechrepublic";
+                break;
+            case "United Kingdom":
+                country = "unitedkingdom";
+                break;
+            case "Macedonia, FYR":
+                country = "macedoniafyr";
+                break;
+            case "Russian Federation":
+                country = "russia";
+                break;
+            case "San Marino":
+                country = "sanmarino";
+                break;
+            case "Slovak Republic":
+                country = "slovak";
+                break;
         }
 
         String flag = country.toLowerCase();
@@ -393,12 +399,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         textCountryName.setText(country);
         try {
-            textCountryPopulation.setText(countries.getCountry(country).getPopulation(year + "").toString());
+            textCountryPopulation.setText(countries.getCountry(country).getPopulation(year + ""));
             textCountryCapital.setText(countries.getCountry(country).getCapital());
         } catch (NullPointerException e) {
-
+            e.printStackTrace();
         }
-        textYear.setText("The data shown below is for the year of " +year);
+        textYear.setText("The data shown below is for the year of " + year);
         textYear1.setText(year + ":");
         String yearChart = year + "";
         // TODO pie chart
@@ -528,8 +534,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         addDataToChart(yValue, xValue, title);
-
-
     }
 
     private void addDataToChart(ArrayList<Entry> yValue, ArrayList<String> xValue, String title) {
@@ -538,7 +542,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dataSet.setSliceSpace(3);
         dataSet.setSelectionShift(5);
 
-        ArrayList<Integer> colors = new ArrayList<Integer>();
+        ArrayList<Integer> colors = new ArrayList<>();
 
         colors.add(ColorTemplate.getHoloBlue());
         colors.add(Color.RED);
@@ -556,5 +560,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChart.invalidate();
 
     }
-
 }
