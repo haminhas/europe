@@ -2,15 +2,12 @@ package boysenberry.europe;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewParentCompatICS;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,7 +25,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,10 +34,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,7 +45,6 @@ import java.util.concurrent.ExecutionException;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
 
-
     // TODO add line chart
     // TODO Remove pointer at germany
     // TODO add population string before
@@ -60,23 +52,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // TODO Country flag should be alligned to the right
 
     private Geocoder geocoder;
-    private Marker marker;
-
     private GoogleMap mMap;
     private RelativeLayout layoutInformation;
     private SeekBar seekBar;
+    private Spinner spinnerCountries;
     private ImageView imageCountryFlag;
     private TextView textCountryName;
     private TextView textCountryPopulation;
     private TextView textCountryCapital;
     private TextView textYear;
-    private TextView textYear1;
     private TextView textRatio;
 
     private Countries countries;
     private String countryName;
 
-    private final LatLng CENTER = new LatLng(57.75, 18);
+    private final LatLng CENTER = new LatLng(54, 15);
     private final int YEAR_END = 2013;
     private final int YEAR_START = 1991;
 
@@ -97,6 +87,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         checkNetwork();
         startUp();
 
+        Toast.makeText(getApplicationContext(), "Select a country from the menu, or just click on the map", Toast.LENGTH_LONG).show();
     }
 
     public Context getAppContext() {
@@ -135,13 +126,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         geocoder = new Geocoder(this, Locale.getDefault());
         layoutInformation = (RelativeLayout) findViewById(R.id.layoutInformation);
         //layoutInformation.setAlpha(0.95f);
-        //layoutInformation.setVisibility(View.INVISIBLE);
+        layoutInformation.setVisibility(View.INVISIBLE);
 
         textCountryName = (TextView) findViewById(R.id.textCountryName);
         textCountryPopulation = (TextView) findViewById(R.id.textCountryPopulation);
         textCountryCapital = (TextView) findViewById(R.id.textCountryCapital);
         textYear = (TextView) findViewById(R.id.textYear);
-        textYear1 = (TextView) findViewById(R.id.textYear);
         TextView population = (TextView) findViewById(R.id.population);
         imageCountryFlag = (ImageView) findViewById(R.id.imageCountryFlag);
         textRatio = (TextView) findViewById(R.id.ratio);
@@ -150,22 +140,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         textCountryPopulation.setTextColor(Color.WHITE);
         textCountryCapital.setTextColor(Color.WHITE);
         textYear.setTextColor(Color.WHITE);
-        textYear1.setTextColor(Color.WHITE);
         population.setTextColor(Color.WHITE);
         textRatio.setTextColor(Color.WHITE);
 
 
-        Spinner spinnerCountries = (Spinner) findViewById(R.id.spinnerCountry);
+        spinnerCountries = (Spinner) findViewById(R.id.spinnerCountry);
         spinnerCountries.setDropDownHorizontalOffset(5);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, countryList);
+        ArrayList<String> tempArr = countryList;
+        tempArr.add(0, "Select a country");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, tempArr);
         spinnerCountries.setAdapter(adapter);
         spinnerCountries.setOnItemSelectedListener(new spinnerListener());
 
         seekBar = (SeekBar) findViewById(R.id.seekBarYear);
         seekBar.setMax(YEAR_END - YEAR_START);
+        seekBar.setProgress(2013);
         seekBar.setOnSeekBarChangeListener(new seekYearChange());
-//        seekBar.setVisibility(View.INVISIBLE);
 
         GoogleApiClient client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
@@ -173,7 +164,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void checkNetwork() {
         if (isNetworkConnected(this)) {
             if (Data.isNull(this.getApplicationContext())) {
-                Log.i("tag", "work");
                 String country = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR?per_page=100&format=json";
                 String female = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SL.EMP.TOTL.SP.FE.ZS?format=json&date=1990:2013&per_page=10000";
                 String population = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SP.POP.TOTL?format=json&date=1990%3A2013&per_page=10000";
@@ -206,7 +196,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } else {
                 data();
             }
-
         } else {
             data();
         }
@@ -220,7 +209,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             layoutSpinner.setHorizontalGravity(50);
             layoutInformation.setHorizontalGravity(50);
         } catch (RuntimeException e) {
-            Log.i("Runtime Exception", "Please connect to the internet");
+            e.printStackTrace();
         }
     }
 
@@ -252,7 +241,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Method is used to get a countries name using the latitude and longitude. Method doesn't return
      * anything but updates the countryName variable which is important for other features of the app.
-     * <p/>
+     * <p>
      * Method is also used to change some of the countries name because of variations between the Google
      * and WorldDataBank name for countries.
      *
@@ -265,24 +254,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         List<Address> addresses = new ArrayList<>();
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            Log.d("MainActivity", "Got the country name.");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d("MainActivity", e.toString());
         }
 
         Address address;
 
-        try {
-            address = addresses.get(0);
-            if (address != null) {
-                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                    countryName = address.getCountryName();
-                }
+        address = addresses.get(0);
+        if (address != null) {
+            for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+                countryName = address.getCountryName();
             }
-        } catch (IndexOutOfBoundsException e) {
-            Toast.makeText(getApplicationContext(), "Click on a country you fool", Toast.LENGTH_SHORT).show();
-            countryName = "United Kingdom";
         }
 
         switch (countryName) {
@@ -360,8 +342,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // TODO pie chart
             //createDougnutCharts(year + "");
             updateInformationLayout(countryName, year);
-            textYear.setText("The data shown below is for the year of " + year);
-            textYear1.setText(year + ":");
+            textYear.setText(year + ":");
             textCountryPopulation.setText(countries.getCountry(countryName).getPopulation(year + ""));
         }
 
@@ -380,20 +361,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-            countryName = parent.getItemAtPosition(position).toString();
-            updateInformationLayout(countryName, YEAR_END);
-            setFlag(countryName);
+            try {
+                if (position != 0) {
+                    countryName = parent.getItemAtPosition(position).toString();
+                    updateInformationLayout(countryName, YEAR_END);
+                    setFlag(countryName);
+                    seekBar.setProgress(2013);
 
-            //textCountryName.setText(countryName);
+                    if (layoutInformation.getVisibility() == View.INVISIBLE) {
+                        layoutInformation.setVisibility(View.VISIBLE);
+                        LatLng CENTER = new LatLng(53, 30);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+                    }
+                }
+            } catch (NullPointerException e) {
+                Toast.makeText(getApplicationContext(), "Please connect to the internet and try again", Toast.LENGTH_LONG).show();
+            }
 
-
-            // Showing selected spinner item
-            //Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
         }
 
         public void onNothingSelected(AdapterView<?> arg0) {
         }
-
     }
 
     @Override
@@ -403,12 +391,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapClick(LatLng latLng) {
-
-        getCountryName(latLng.latitude, latLng.longitude);
-        updateInformationLayout(countryName, YEAR_END);
-
-        layoutInformation.setVisibility(View.VISIBLE);
-
+        String prevCountryName = "";
+        try {
+            prevCountryName = countryName;
+            getCountryName(latLng.latitude, latLng.longitude);
+            updateInformationLayout(countryName, YEAR_END);
+            setFlag(countryName);
+            seekBar.setProgress(2013);
+            spinnerCountries.setSelection(countryList.indexOf(countryName));
+            if (layoutInformation.getVisibility() == View.INVISIBLE) {
+                layoutInformation.setVisibility(View.VISIBLE);
+                LatLng CENTER = new LatLng(53, 30);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+            }
+        } catch (NullPointerException e) {
+            Toast.makeText(getApplicationContext(), countryName + " is not an European country", Toast.LENGTH_SHORT).show();
+            countryName = prevCountryName;
+            updateInformationLayout(countryName, YEAR_END);
+            seekBar.setProgress(2013);
+        } catch (IndexOutOfBoundsException e) {
+            Toast.makeText(getApplicationContext(), "Please click on a country", Toast.LENGTH_SHORT).show();
+            countryName = prevCountryName;
+        }
     }
 
     private void updateInformationLayout(String country, int year) {
@@ -417,16 +421,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             textCountryPopulation.setText(countries.getCountry(country).getPopulation(year + ""));
             textCountryCapital.setText(countries.getCountry(country).getCapital());
-            String ratioFemalePercentage = countries.getCountry(country).getFemalePopulation(year+"");
+            String ratioFemalePercentage = countries.getCountry(country).getFemalePopulation(year + "");
             Float ratioFemale = Float.parseFloat(ratioFemalePercentage);
             Float ratioMale = 100 - ratioFemale;
-            String display = (int)Math.ceil(ratioMale) + " : " + (int)Math.ceil(ratioFemale);
+            String display = (int) Math.ceil(ratioMale) + " : " + (int) Math.ceil(ratioFemale);
             textRatio.setText(display);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | NumberFormatException e) {
             e.printStackTrace();
         }
-        textYear.setText("The data shown below is for the year of " + year);
-        textYear1.setText(year + ":");
+        textYear.setText(year + ":");
         String yearChart = year + "";
         // TODO pie chart
         //createDougnutCharts(yearChart);
@@ -499,7 +502,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mChart.removeAllViews();
             //mChart.setNoDataTextDescription("Chart 3 doesn't have data for this year.");
         }
-
 
 
     }
