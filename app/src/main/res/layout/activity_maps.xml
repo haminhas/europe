@@ -164,15 +164,35 @@
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:id="@+id/chart1Ratio"></LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <com.github.mikephil.charting.charts.PieChart
+                            <LinearLayout
+                                android:orientation="vertical"
                                 android:layout_width="0dip"
-                                android:layout_height="200dp"
-                                android:id="@+id/mChart2"
-                                android:layout_weight="50" />
+                                android:layout_height="match_parent"
+                                android:layout_weight="50">
 
-                            <RelativeLayout
+                                <com.github.mikephil.charting.charts.PieChart
+                                    android:layout_width="match_parent"
+                                    android:layout_height="200dp"
+                                    android:id="@+id/mChart2"
+                                    android:layout_weight="50" />
+
+                                <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="20dp"
+                                    android:id="@+id/chart2Ratio" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:orientation="vertical"
                                 android:layout_width="0dip"
                                 android:layout_height="match_parent"
                                 android:layout_weight="50">
@@ -182,7 +202,16 @@
                                     android:layout_height="200dp"
                                     android:id="@+id/mChart3"
                                     android:layout_weight="50" />
-                            </RelativeLayout>
+
+                                <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_marginBottom="45dp"
+                                    android:id="@+id/chart3Ratio" />
+                            </LinearLayout>
                         </LinearLayout>
 
                         <TextView
