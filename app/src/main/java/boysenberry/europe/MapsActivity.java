@@ -431,8 +431,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         textYear.setText(year + ":");
         String yearChart = year + "";
-        // TODO pie chart
-        //createDougnutCharts(yearChart);
         seekBar.setVisibility(View.VISIBLE);
 
         createAllCharts(yearChart);
@@ -454,7 +452,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             mChart.removeAllViews();
             mChart.invalidate();
-            createPieChart(mChart, "Female Labour", yData);
+            createPieChart(mChart, "Percentage of labour spilt between the labour.", yData);
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             //mChart.setNoDataTextDescription("Chart 1 doesn't have data for this year.");
@@ -474,7 +472,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             mChart.removeAllViews();
-            createPieChart(mChart, "Female Education", yData);
+            createPieChart(mChart, "Percentage of labour work force. with tertiary education.", yData);
             mChart.invalidate();
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
@@ -495,7 +493,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             mChart.removeAllViews();
-            createPieChart(mChart, "Female Employment", yData);
+            createPieChart(mChart, "Percentage of populationg under employment.", yData);
 
 
         } catch (NumberFormatException e) {
@@ -523,6 +521,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mChart.setUsePercentValues(true);
         mChart.setDescription(title);
+        mChart.setDescriptionPosition(140,40);
         mChart.getLegend().setEnabled(false);
 
         mChart.setDrawHoleEnabled(true);

@@ -141,7 +141,10 @@
                 <SeekBar
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/seekBarYear" />
+                    android:id="@+id/seekBarYear"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="#6F3662" />
 
                 <ScrollView
                     android:layout_width="fill_parent"
