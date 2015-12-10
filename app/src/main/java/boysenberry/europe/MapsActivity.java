@@ -108,7 +108,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Sets camera to the centre point in Europe at zoom level 4 so all European countries are shown
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
-        mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
