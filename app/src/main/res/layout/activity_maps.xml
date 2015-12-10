@@ -24,7 +24,7 @@
         <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_weight="0.60"
+            android:layout_weight="50"
             android:id="@+id/layoutSpinner">
 
             <Spinner
@@ -40,7 +40,7 @@
         <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_weight="0.40"
+            android:layout_weight="50"
             android:id="@+id/layoutInformation"
             android:layout_centerInParent="true"
             android:layout_alignParentLeft="false"
@@ -164,7 +164,7 @@
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="20dp"
+                            android:layout_height="30dp"
                             android:id="@+id/chart1Ratio"></LinearLayout>
 
                         <LinearLayout
@@ -187,35 +187,36 @@
                                 <LinearLayout
                                     android:orientation="horizontal"
                                     android:layout_width="match_parent"
-                                    android:layout_height="20dp"
+                                    android:layout_height="30dp"
                                     android:id="@+id/chart2Ratio" />
                             </LinearLayout>
 
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="50">
+
+                            <com.github.mikephil.charting.charts.PieChart
+                                android:layout_width="match_parent"
+                                android:layout_height="200dp"
+                                android:id="@+id/mChart3"
+                                android:layout_weight="50" />
+
                             <LinearLayout
-                                android:orientation="vertical"
-                                android:layout_width="0dip"
-                                android:layout_height="match_parent"
-                                android:layout_weight="50">
-
-                                <com.github.mikephil.charting.charts.PieChart
-                                    android:layout_width="match_parent"
-                                    android:layout_height="200dp"
-                                    android:id="@+id/mChart3"
-                                    android:layout_weight="50" />
-
-                                <LinearLayout
-                                    android:orientation="horizontal"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="20dp"
-                                    android:layout_alignParentBottom="true"
-                                    android:layout_alignParentStart="true"
-                                    android:layout_marginBottom="45dp"
-                                    android:id="@+id/chart3Ratio" />
-                            </LinearLayout>
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginBottom="45dp"
+                                android:id="@+id/chart3Ratio" />
                         </LinearLayout>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/data_provided"
                             android:id="@+id/textView2"

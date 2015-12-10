@@ -1,13 +1,16 @@
 package boysenberry.europe;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
@@ -96,13 +100,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
         LatLng germany = new LatLng(52, 13);
         //mMap.animateCamera(CameraUpdateFactory.newLatLng(germany));
 
         mMap.setOnMapClickListener(this);
-
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
-//        mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
 
         //Sets camera to the centre point in Europe at zoom level 4 so all European countries are shown
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
@@ -434,6 +436,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private void createAllCharts(String year) {
 
+        LinearLayout chart1 = (LinearLayout) findViewById(R.id.chart1Ratio);
         try {
             mChart = (PieChart) findViewById(R.id.mChart1);
             String femaleLabourPercentage = countries.getCountry(countryName).getLabour(year);
@@ -451,26 +454,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             createPieChart(mChart, "Percentage of labour spilt between the labour.", yData);
 
             // adding ratio for each chart in the form of male and female
-            LinearLayout chart1 = (LinearLayout) findViewById(R.id.chart1Ratio);
+            chart1.removeAllViews();
             addRatio(femaleLabour, maleLabour, chart1);
-//            chart1.removeAllViews();
-//
-//            for(int i = 0; i < ((int)Math.ceil(femaleLabour)/10); i++) {
-//                ImageView image = new ImageView(this);
-//                image.setImageResource(getResources().getIdentifier("female", "drawable", getPackageName()));
-//                chart1.addView(image);
-//            }
-//            for(int i = 0; i < ((int)Math.ceil(maleLabour)/10); i++) {
-//                ImageView image = new ImageView(this);
-//                image.setImageResource(getResources().getIdentifier("male", "drawable", getPackageName()));
-//                chart1.addView(image);
-//            }
+
 
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
+            chart1.removeAllViews();
             //mChart.setNoDataTextDescription("Chart 1 doesn't have data for this year.");
         }
 
+        LinearLayout chart2 = (LinearLayout) findViewById(R.id.chart2Ratio);
         try {
             mChart = (PieChart) findViewById(R.id.mChart2);
             String femaleEducationPercentage = countries.getCountry(countryName).getEducation(year);
@@ -484,14 +478,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             mChart.removeAllViews();
-            createPieChart(mChart, "Percentage of labour work force. with tertiary education.", yData);
             mChart.invalidate();
+            createPieChart(mChart, "Percentage of labour work force. with tertiary education.", yData);
+
+            chart2.removeAllViews();
+            addRatio(femaleEducation, maleEducation, chart2);
 
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
+            chart2.removeAllViews();
             //mChart.setNoDataTextDescription("Chart 2 doesn't have data for this year.");
         }
 
+        LinearLayout chart3 = (LinearLayout) findViewById(R.id.chart3Ratio);
         try {
             mChart = (PieChart) findViewById(R.id.mChart3);
             String femaleEmploymentPercentage = countries.getCountry(countryName).getPercentageFemale(year);
@@ -505,10 +504,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             mChart.removeAllViews();
-            createPieChart(mChart, "Percentage of populationg under employment.", yData);
+            createPieChart(mChart, "Percentage of population under employment.", yData);
+
+            chart3.removeAllViews();
+            addRatio(femaleEmployment, maleEmployment, chart3);
 
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
+            chart3.removeAllViews();
             //mChart.setNoDataTextDescription("Chart 3 doesn't have data for this year.");
         }
 
@@ -545,7 +548,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mChart.setUsePercentValues(true);
         mChart.setDescription(title);
-        mChart.setDescriptionPosition(140, 40);
+//        mChart.setDescriptionPosition();
+        TextView textTitle = new TextView(this);
+        textTitle.setText(title);
+        textTitle.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        mChart.addView(textTitle);
+
         mChart.getLegend().setEnabled(false);
 
         mChart.setDrawHoleEnabled(true);
@@ -558,6 +567,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mChart.setRotationAngle(0);
         mChart.setRotationEnabled(true);
+
+        mChart.setNoDataText("");
+        mChart.invalidate();
 
         mChart.animateXY(2000, 2000);
 
@@ -591,8 +603,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         xValue.add("Female");
 
         PieDataSet dataSet = new PieDataSet(yValue, title);
-        dataSet.setSliceSpace(3);
-        dataSet.setSelectionShift(5);
+        dataSet.setSliceSpace(10);
+        dataSet.setSelectionShift(10);
 
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(Color.rgb(255, 174, 93));
@@ -606,7 +618,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         data.setValueTextColor(Color.rgb(111, 54, 98));
         data.setValueTextColor(Color.rgb(198, 61, 15));
-
 
         mChart.setData(data);
 
