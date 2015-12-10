@@ -170,7 +170,8 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="#6F3662"></RelativeLayout>
+                            android:background="#6F3662"
+                            android:layout_marginTop="10dp"></RelativeLayout>
 
                         <LinearLayout
                             android:orientation="horizontal"
@@ -185,7 +186,7 @@
 
                                 <com.github.mikephil.charting.charts.PieChart
                                     android:layout_width="match_parent"
-                                    android:layout_height="200dp"
+                                    android:layout_height="250dp"
                                     android:id="@+id/mChart2"
                                     android:layout_weight="50" />
 
@@ -201,7 +202,8 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="#6F3662" />
+                            android:background="#6F3662"
+                            android:layout_marginTop="10dp" />
 
                         <LinearLayout
                             android:orientation="vertical"
@@ -211,7 +213,7 @@
 
                             <com.github.mikephil.charting.charts.PieChart
                                 android:layout_width="match_parent"
-                                android:layout_height="200dp"
+                                android:layout_height="250dp"
                                 android:id="@+id/mChart3"
                                 android:layout_weight="50" />
 

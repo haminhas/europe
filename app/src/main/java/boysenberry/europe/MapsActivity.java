@@ -201,7 +201,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void data() {
         try {
             countries = Data.getAllData(this.getApplicationContext());
-            // TODO remove google maps and set info layout to take up 70% of screen space
             RelativeLayout layoutSpinner = (RelativeLayout) findViewById(R.id.layoutSpinner);
             layoutSpinner.setHorizontalGravity(50);
             layoutInformation.setHorizontalGravity(50);
@@ -441,6 +440,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         try {
             mChart = (PieChart) findViewById(R.id.mChart1);
+            mChart.removeAllViewsInLayout();
             String femaleLabourPercentage = countries.getCountry(countryName).getLabour(year);
             float femaleLabour = Float.parseFloat(femaleLabourPercentage);
             float maleLabour = 100 - femaleLabour;
@@ -453,7 +453,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             mChart.removeAllViews();
             mChart.invalidate();
-            createPieChart(mChart, "Percentage of labour spilt between the labour.", yData);
+            createPieChart(mChart, "Percentage of labour spilt between the labour.", yData, year);
 
             // adding ratio for each chart in the form of male and female
             mChart.setNoDataText("");
@@ -470,14 +470,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             chart1.removeAllViews();
-            mChart.setNoDataText("");
+            mChart.setNoDataText("World data bank doesn't have data \n" +
+                    " available for this year.");
             mChart.setNoDataTextDescription("");
-            //mChart.setNoDataTextDescription("Chart 1 doesn't have data for this year.");
+
         }
 
         LinearLayout chart2 = (LinearLayout) findViewById(R.id.chart2Ratio);
         try {
             mChart = (PieChart) findViewById(R.id.mChart2);
+            mChart.removeAllViewsInLayout();
             String femaleEducationPercentage = countries.getCountry(countryName).getEducation(year);
             float femaleEducation = Float.parseFloat(femaleEducationPercentage);
             float maleEducation = 100 - femaleEducation;
@@ -490,7 +492,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             mChart.removeAllViews();
             mChart.invalidate();
-            createPieChart(mChart, "Percentage of labour work force. with tertiary education.", yData);
+            createPieChart(mChart, "Percentage of labour work force. with tertiary education.", yData, year);
 
             mChart.setNoDataText("");
             mChart.setNoDataTextDescription("");
@@ -505,13 +507,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mChart.removeAllViews();
             chart2.removeAllViews();
             //mChart.setNoDataTextDescription("Chart 2 doesn't have data for this year.");
-            mChart.setNoDataText("");
+            mChart.setNoDataText("World data bank doesn't have data \n available for this year.");
             mChart.setNoDataTextDescription("");
         }
 
         LinearLayout chart3 = (LinearLayout) findViewById(R.id.chart3Ratio);
         try {
             mChart = (PieChart) findViewById(R.id.mChart3);
+            mChart.removeAllViewsInLayout();
+            mChart.setNoDataText("");
+            mChart.setNoDataTextDescription("");
             String femaleEmploymentPercentage = countries.getCountry(countryName).getPercentageFemale(year);
             float femaleEmployment = Float.parseFloat(femaleEmploymentPercentage);
             float maleEmployment = 100 - femaleEmployment;
@@ -523,7 +528,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             mChart.removeAllViews();
-            createPieChart(mChart, "Percentage of population under employment.", yData);
+            createPieChart(mChart, "Percentage of population under employment.", yData, year);
 
             mChart.setNoDataText("");
             mChart.setNoDataTextDescription("");
@@ -537,21 +542,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             chart3.removeAllViews();
-            //mChart.setNoDataTextDescription("Chart 3 doesn't have data for this year.");
-            mChart.setNoDataText("");
+            mChart.setNoDataText("World data bank doesn't have data \n" +
+                    " available for this year.");
             mChart.setNoDataTextDescription("");
+
         }
 
     }
 
     private void addRatio(float female, float male, LinearLayout chart){
         chart.removeAllViews();
-        for(int i = 0; i < ((int)Math.ceil(female)/10); i++) {
+//        for(int i = 0; i < ((int)Math.ceil(female)/50); i++) {
+        for(int i = 0; i < ((int) female/50); i++) {
             ImageView image = new ImageView(this);
             image.setImageResource(getResources().getIdentifier("female", "drawable", getPackageName()));
             chart.addView(image);
         }
-        for(int i = 0; i < ((int)Math.ceil(male)/10); i++) {
+        for(int i = 0; i < ((int)Math.ceil(male)/50); i++) {
             ImageView image = new ImageView(this);
             image.setImageResource(getResources().getIdentifier("male", "drawable", getPackageName()));
             chart.addView(image);
@@ -566,7 +573,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param title     title for the pie chart
      * @param yValue    set of data for the y axis
      */
-    private void createPieChart(PieChart chart, String title, ArrayList<Entry> yValue) {
+    private void createPieChart(PieChart chart, String title, ArrayList<Entry> yValue, String year) {
 
         mChart = new PieChart(this);
         chart.addView(mChart);
@@ -576,13 +583,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChart.setNoDataText("");
         mChart.setNoDataTextDescription("");
 
+        mChart.setDescription("");
+
         mChart.setUsePercentValues(true);
-        mChart.setDescription(title);
-//        mChart.setDescriptionPosition();
+
+        mChart.setCenterText(year);
+
+
         TextView textTitle = new TextView(this);
         textTitle.setText(title);
         textTitle.setGravity(Gravity.CENTER_HORIZONTAL);
-
         mChart.addView(textTitle);
 
         mChart.getLegend().setEnabled(false);
@@ -590,7 +600,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleColorTransparent(true);
         mChart.setHoleRadius(20);
-        mChart.setTransparentCircleRadius(10);
+        mChart.setHoleColor(Color.rgb(248,248,242));
+        mChart.setTransparentCircleRadius(5);
 
         mChart.setExtraOffsets(5, 10, 5, 5);
         mChart.setNoDataTextDescription(null)   ;
@@ -603,7 +614,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mChart.animateXY(2000, 2000);
 
-        // TODO work this shit out
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry entry, int i, Highlight highlight) {
@@ -633,7 +643,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         xValue.add("Female");
 
         PieDataSet dataSet = new PieDataSet(yValue, title);
-        dataSet.setSliceSpace(10);
+        dataSet.setSliceSpace(0);
         dataSet.setSelectionShift(10);
 
         ArrayList<Integer> colors = new ArrayList<>();
@@ -644,7 +654,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         PieData data = new PieData(xValue, dataSet);
         data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(15f);
+        data.setValueTextSize(13f);
 
         data.setValueTextColor(Color.rgb(111, 54, 98));
         data.setValueTextColor(Color.rgb(198, 61, 15));
