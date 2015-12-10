@@ -470,8 +470,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             chart1.removeAllViews();
-            mChart.setNoDataText("World data bank doesn't have data \n" +
-                    " available for this year.");
+            mChart.setNoDataText("Data not available.");
             mChart.setNoDataTextDescription("");
 
         }
@@ -506,8 +505,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             chart2.removeAllViews();
-            //mChart.setNoDataTextDescription("Chart 2 doesn't have data for this year.");
-            mChart.setNoDataText("World data bank doesn't have data \n available for this year.");
+            mChart.setNoDataText("Data not available.");
             mChart.setNoDataTextDescription("");
         }
 
@@ -542,8 +540,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             chart3.removeAllViews();
-            mChart.setNoDataText("World data bank doesn't have data \n" +
-                    " available for this year.");
+            mChart.setNoDataText("Data not available.");
             mChart.setNoDataTextDescription("");
 
         }
@@ -552,13 +549,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void addRatio(float female, float male, LinearLayout chart){
         chart.removeAllViews();
-//        for(int i = 0; i < ((int)Math.ceil(female)/50); i++) {
-        for(int i = 0; i < ((int) female/50); i++) {
+        for(int i = 0; i < ((int)Math.ceil(female)/10); i++) {
+//        for(int i = 0; i < ((int) female/50); i++) {
             ImageView image = new ImageView(this);
             image.setImageResource(getResources().getIdentifier("female", "drawable", getPackageName()));
             chart.addView(image);
         }
-        for(int i = 0; i < ((int)Math.ceil(male)/50); i++) {
+        for(int i = 0; i < ((int)Math.ceil(male)/10); i++) {
             ImageView image = new ImageView(this);
             image.setImageResource(getResources().getIdentifier("male", "drawable", getPackageName()));
             chart.addView(image);
@@ -593,6 +590,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         TextView textTitle = new TextView(this);
         textTitle.setText(title);
         textTitle.setGravity(Gravity.CENTER_HORIZONTAL);
+        textTitle.setTextColor(Color.BLACK);
         mChart.addView(textTitle);
 
         mChart.getLegend().setEnabled(false);
@@ -604,13 +602,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChart.setTransparentCircleRadius(5);
 
         mChart.setExtraOffsets(5, 10, 5, 5);
-        mChart.setNoDataTextDescription(null)   ;
 
-        mChart.setRotationAngle(0);
+        mChart.setRotationAngle(10);
         mChart.setRotationEnabled(true);
 
-        mChart.setNoDataText("");
-        mChart.invalidate();
 
         mChart.animateXY(2000, 2000);
 
