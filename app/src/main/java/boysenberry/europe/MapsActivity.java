@@ -96,12 +96,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        LatLng germany = new LatLng(52, 13);
-        //mMap.animateCamera(CameraUpdateFactory.newLatLng(germany));
 
         mMap.setOnMapClickListener(this);
 
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
 //        mMap.addMarker(new MarkerOptions().position(germany).title("Tap and hold to view infographics for European countries."));
 
         //Sets camera to the centre point in Europe at zoom level 4 so all European countries are shown
@@ -229,8 +227,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLngBounds visibleBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
         if (!europeBounds.contains(visibleBounds.getCenter())) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+            setMapCenter();
         }
+    }
+
+    private void setMapCenter(){
+        LatLng CENTER = new LatLng(53, 32);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
     }
 
 
@@ -353,8 +356,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     if (layoutInformation.getVisibility() == View.INVISIBLE) {
                         layoutInformation.setVisibility(View.VISIBLE);
-                        LatLng CENTER = new LatLng(53, 30);
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+                        setMapCenter();
                     }
                 }
             } catch (NullPointerException e) {
@@ -385,8 +387,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             spinnerCountries.setSelection(countryList.indexOf(countryName));
             if (layoutInformation.getVisibility() == View.INVISIBLE) {
                 layoutInformation.setVisibility(View.VISIBLE);
-                LatLng CENTER = new LatLng(53, 30);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+                setMapCenter();
             }
         } catch (NullPointerException e) {
             Toast.makeText(getApplicationContext(), countryName + " is not an European country", Toast.LENGTH_SHORT).show();

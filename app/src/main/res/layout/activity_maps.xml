@@ -24,7 +24,7 @@
         <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_weight="0.60"
+            android:layout_weight="0.50"
             android:id="@+id/layoutSpinner">
 
             <Spinner
@@ -40,7 +40,7 @@
         <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_weight="0.40"
+            android:layout_weight="0.50"
             android:id="@+id/layoutInformation"
             android:layout_centerInParent="true"
             android:layout_alignParentLeft="false"
