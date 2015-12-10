@@ -167,6 +167,11 @@
                             android:layout_height="30dp"
                             android:id="@+id/chart1Ratio"></LinearLayout>
 
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#6F3662"></RelativeLayout>
+
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
@@ -192,6 +197,11 @@
                             </LinearLayout>
 
                         </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#6F3662" />
 
                         <LinearLayout
                             android:orientation="vertical"

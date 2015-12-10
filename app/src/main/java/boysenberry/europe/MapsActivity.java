@@ -22,7 +22,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
@@ -437,6 +436,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void createAllCharts(String year) {
 
         LinearLayout chart1 = (LinearLayout) findViewById(R.id.chart1Ratio);
+
+
+
         try {
             mChart = (PieChart) findViewById(R.id.mChart1);
             String femaleLabourPercentage = countries.getCountry(countryName).getLabour(year);
@@ -454,13 +456,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             createPieChart(mChart, "Percentage of labour spilt between the labour.", yData);
 
             // adding ratio for each chart in the form of male and female
+            mChart.setNoDataText("");
+            mChart.setNoDataTextDescription("");
+
             chart1.removeAllViews();
             addRatio(femaleLabour, maleLabour, chart1);
+
+            mChart.setNoDataText("");
+            mChart.setNoDataTextDescription("");
+
 
 
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             chart1.removeAllViews();
+            mChart.setNoDataText("");
+            mChart.setNoDataTextDescription("");
             //mChart.setNoDataTextDescription("Chart 1 doesn't have data for this year.");
         }
 
@@ -481,13 +492,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mChart.invalidate();
             createPieChart(mChart, "Percentage of labour work force. with tertiary education.", yData);
 
+            mChart.setNoDataText("");
+            mChart.setNoDataTextDescription("");
+
             chart2.removeAllViews();
             addRatio(femaleEducation, maleEducation, chart2);
+
+            mChart.setNoDataText("");
+            mChart.setNoDataTextDescription("");
 
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             chart2.removeAllViews();
             //mChart.setNoDataTextDescription("Chart 2 doesn't have data for this year.");
+            mChart.setNoDataText("");
+            mChart.setNoDataTextDescription("");
         }
 
         LinearLayout chart3 = (LinearLayout) findViewById(R.id.chart3Ratio);
@@ -506,13 +525,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mChart.removeAllViews();
             createPieChart(mChart, "Percentage of population under employment.", yData);
 
+            mChart.setNoDataText("");
+            mChart.setNoDataTextDescription("");
+
             chart3.removeAllViews();
             addRatio(femaleEmployment, maleEmployment, chart3);
+
+            mChart.setNoDataText("");
+            mChart.setNoDataTextDescription("");
 
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             chart3.removeAllViews();
             //mChart.setNoDataTextDescription("Chart 3 doesn't have data for this year.");
+            mChart.setNoDataText("");
+            mChart.setNoDataTextDescription("");
         }
 
     }
@@ -545,6 +572,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         chart.addView(mChart);
 
         chart.setBackgroundColor(Color.TRANSPARENT);
+
+        mChart.setNoDataText("");
+        mChart.setNoDataTextDescription("");
 
         mChart.setUsePercentValues(true);
         mChart.setDescription(title);
