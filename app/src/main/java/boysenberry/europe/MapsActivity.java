@@ -125,7 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         geocoder = new Geocoder(this, Locale.getDefault());
         layoutInformation = (RelativeLayout) findViewById(R.id.layoutInformation);
         //layoutInformation.setAlpha(0.95f);
-        layoutInformation.setVisibility(View.INVISIBLE);
+//        layoutInformation.setVisibility(View.INVISIBLE);
 
         textCountryName = (TextView) findViewById(R.id.textCountryName);
         textCountryPopulation = (TextView) findViewById(R.id.textCountryPopulation);
