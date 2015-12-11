@@ -17,6 +17,12 @@ public class JSONparser {
     private Context context;
     private Countries c = new Countries();
 
+    /**
+     * Initialises all the country objects are stores the country name, ID, and Capital city
+     *
+     * @param  s - JSON format string
+     * @return String
+     */
     public String Country(String s) {
         String temp = "";
         try {
@@ -34,12 +40,19 @@ public class JSONparser {
                 temp = id +" "+ name +" "+ capital;
 
             } // End Loop
-        } catch (JSONException e) {
-            Log.e("JSONException", "Error: " + e.toString());
+        } catch (JSONException | NullPointerException e) {
+            Log.e("", "Error: " + e.toString());
         }
         return temp;
     }
 
+    /**
+     * Adds data to correct country objects
+     *
+     * @param  s - JSON format
+     *         number - used to decide which where the data should be saved
+     * @return String
+     */
     public String[] Data(String s, String number) {
         ArrayList<String> t = new ArrayList<>();
         try {
@@ -60,18 +73,26 @@ public class JSONparser {
 
                 temp = value + "," + date;
                 t.add(temp);
+                //loops through all the countries until it finds the correct country which matches the ID
                 for (Country j : c.getList()) {
                     if (j.getID().equals(id)) {
+                        // then it adds the data to the an array which is the country class based
+                        // on the value that is passed to the method
                         if (number.equals("first")) {
-                            j.addFemalePercentage(temp);
+                            j.addparliaments(temp);
+                            break;
                         } else if (number.equals("second")) {
                             j.addPopulation(temp);
+                            break;
                         } else if (number.equals("third")) {
                             j.addFemalePopulation(temp);
+                            break;
                         } else if (number.equals("fourth")) {
                             j.addEducation(temp);
+                            break;
                         } else if (number.equals("fifth")) {
                             j.addlabour(temp);
+                            break;
 
                         }
                     }
@@ -90,6 +111,10 @@ public class JSONparser {
         return c;
     }
 
+
+    /**
+     * Saves all the data to local memory
+     */
     public void saveData(Context context){
         this.context = context;
 

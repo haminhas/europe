@@ -1,7 +1,6 @@
 package boysenberry.europe;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -49,7 +48,6 @@ public class Data {
             FileOutputStream outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
             outputStream.write(data.getBytes());
             outputStream.close();
-            Log.i("SAVED DATA FOR COUNTRY:", filename);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -113,7 +111,7 @@ public class Data {
                 else if (i < 51)
                     co.addFemalePopulation(lines.get(i));
                 else if (i < 75)
-                    co.addFemalePercentage(lines.get(i));
+                    co.addparliaments(lines.get(i));
                 else if (i < 99)
                     co.addEducation(lines.get(i));
                 else if (i < 123)

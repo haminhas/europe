@@ -22,7 +22,10 @@ public class JSONparserTest extends TestCase {
                 "\"region\":{\"id\":\"ECS\",\"value\":\"Europe & Central Asia (all income levels)\"},\"adminregion\":{\"id\":\"\",\"value\":\"\"}," +
                 "\"incomeLevel\":{\"id\":\"OEC\",\"value\":\"High income: OECD\"},\"lendingType\":{\"id\":\"LNX\",\"value\":\"Not classified\"}," +
                 "\"capitalCity\":\"London\",\"longitude\":\"-0.126236\",\"latitude\":\"51.5002\"}]]";
-        Assert.assertEquals(p.Country(s),"GB United Kingdom London");
+        String z = p.Country(s);
+        // I have put this same string in the maps activty class and used the same method on it but I have no
+        // idea why it returns null when I test it here
+        Assert.assertEquals(z,"GB United Kingdom London");
     }
 
     public void testData(){
