@@ -455,7 +455,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             xValue.add("Male");
             xValue.add("Female");
 
-            createPieChart(mChart, "Percentage of labour spilt between the labour.", yData, xValue, year);
+            createPieChart(mChart, "Percentage of Females employed (out of all females).", yData, xValue, year);
 
 
             chart1.removeAllViews();
@@ -492,7 +492,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             xValue.add("Without education");
             xValue.add("With education");
 
-            createPieChart(mChart, "Percetange of female in workforce with tertiary education", yData, xValue, year);
+            createPieChart(mChart, "Percentage of female in workforce with tertiary education", yData, xValue, year);
 
             chart2.removeAllViews();
             for(int i = 0; i < ((int)Math.ceil(femaleEducation)/10); i++) {
@@ -535,7 +535,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             xValue.add("Male");
             xValue.add("Female");
 
-            createPieChart(mChart, "Percentage of population under employment.", yData, xValue, year);
+            createPieChart(mChart, "Breakdown of gender employment (% out of whole population).", yData, xValue, year);
 
             chart3.removeAllViews();
             addRatio(femaleEmployment, maleEmployment, chart3);
