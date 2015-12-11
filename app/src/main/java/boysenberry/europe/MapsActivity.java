@@ -1,9 +1,7 @@
 package boysenberry.europe;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
@@ -39,7 +37,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,6 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Countries countries;
     private String countryName;
+    private String prevValidCountryName;
 
     private final LatLng CENTER = new LatLng(54, 15);
     private final int YEAR_END = 2013;
@@ -102,7 +100,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
         LatLng germany = new LatLng(52, 13);
-        //mMap.animateCamera(CameraUpdateFactory.newLatLng(germany));
 
         mMap.setOnMapClickListener(this);
 
@@ -225,16 +222,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void boundsCheck() {
         LatLngBounds europeBounds = new LatLngBounds(
-                new LatLng(35, -25),
-                new LatLng(70, 45)
+                new LatLng(35, -10),
+                new LatLng(70, 70)
         );
 
         LatLngBounds visibleBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
         if (!europeBounds.contains(visibleBounds.getCenter())) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+            setMapCenter();
         }
     }
 
+    private void setMapCenter() {
+        LatLng CENTER = new LatLng(53, 32);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+    }
 
     /**
      * Method is used to get a countries name using the latitude and longitude. Method doesn't return
@@ -336,8 +337,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             textCountryPopulation.setText(countries.getCountry(countryName).getPopulation(year + ""));
         }
 
-        @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-        @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
 
     }
 
@@ -355,8 +361,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     if (layoutInformation.getVisibility() == View.INVISIBLE) {
                         layoutInformation.setVisibility(View.VISIBLE);
-                        LatLng CENTER = new LatLng(53, 30);
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+                        setMapCenter();
                     }
                 }
             } catch (NullPointerException e) {
@@ -372,14 +377,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Method is used to get the latitude and longitude when a user clicks on the map.
      *
-     * @param latLng    used to work out which country is being clicked on by the user.
+     * @param latLng used to work out which country is being clicked on by the user.
      */
     @Override
     public void onMapClick(LatLng latLng) {
-
-        String prevCountryName = "";
         try {
-            prevCountryName = countryName;
             getCountryName(latLng.latitude, latLng.longitude);
             updateInformationLayout(countryName, YEAR_END);
             setFlag(countryName);
@@ -387,17 +389,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             spinnerCountries.setSelection(countryList.indexOf(countryName));
             if (layoutInformation.getVisibility() == View.INVISIBLE) {
                 layoutInformation.setVisibility(View.VISIBLE);
-                LatLng CENTER = new LatLng(53, 30);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 4));
+                setMapCenter();
             }
+            prevValidCountryName = countryName;
         } catch (NullPointerException e) {
             Toast.makeText(getApplicationContext(), countryName + " is not an European country", Toast.LENGTH_SHORT).show();
-            countryName = prevCountryName;
-            updateInformationLayout(countryName, YEAR_END);
+            if (prevValidCountryName != null) {
+                countryName = prevValidCountryName;
+                updateInformationLayout(countryName, YEAR_END);
+            }
             seekBar.setProgress(2013);
         } catch (IndexOutOfBoundsException e) {
             Toast.makeText(getApplicationContext(), "Please click on a country", Toast.LENGTH_SHORT).show();
-            countryName = prevCountryName;
+            countryName = prevValidCountryName;
         }
 
     }
@@ -405,8 +409,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Method is used to to update information such as country name, country population, country capital,
      * ratios of male to female population.
-     * @param country   parameter which is required to update the name of the country and various other widgets
-     * @param year      parameter required to show information for a particular year.
+     *
+     * @param country parameter which is required to update the name of the country and various other widgets
+     * @param year    parameter required to show information for a particular year.
      */
     private void updateInformationLayout(String country, int year) {
 
@@ -432,7 +437,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Method is used to create all charts for the information layout.
      *
-     * @param year  charts are created depending on the year passed through
+     * @param year charts are created depending on the year passed through
      */
     private void createAllCharts(String year) {
 
@@ -465,7 +470,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mChart.setNoDataTextDescription("");
 
 
-
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
             chart1.removeAllViews();
@@ -495,12 +499,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             createPieChart(mChart, "Percentage of female in workforce with tertiary education", yData, xValue, year);
 
             chart2.removeAllViews();
-            for(int i = 0; i < ((int)Math.ceil(femaleEducation)/10); i++) {
+            for (int i = 0; i < ((int) Math.ceil(femaleEducation) / 10); i++) {
                 ImageView image = new ImageView(this);
                 image.setImageResource(getResources().getIdentifier("femaleeducated", "drawable", getPackageName()));
                 chart2.addView(image);
             }
-            for(int i = 0; i < ((int)Math.ceil(femaleNotEducation)/10); i++) {
+            for (int i = 0; i < ((int) Math.ceil(femaleNotEducation) / 10); i++) {
                 ImageView image = new ImageView(this);
                 image.setImageResource(getResources().getIdentifier("female", "drawable", getPackageName()));
                 chart2.addView(image);
@@ -551,14 +555,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void addRatio(float female, float male, LinearLayout chart){
+    private void addRatio(float female, float male, LinearLayout chart) {
         chart.removeAllViews();
-        for(int i = 0; i < ((int)Math.ceil(female)/10); i++) {
+        for (int i = 0; i < ((int) Math.ceil(female) / 10); i++) {
             ImageView image = new ImageView(this);
             image.setImageResource(getResources().getIdentifier("female", "drawable", getPackageName()));
             chart.addView(image);
         }
-        for(int i = 0; i < ((int)Math.ceil(male)/10); i++) {
+        for (int i = 0; i < ((int) Math.ceil(male) / 10); i++) {
             ImageView image = new ImageView(this);
             image.setImageResource(getResources().getIdentifier("male", "drawable", getPackageName()));
             chart.addView(image);
@@ -569,9 +573,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Method is used to create individual pie charts for the information layout. In this method
      * all of the properties are described.
      *
-     * @param chart     layout to which the chart should be drawn on
-     * @param title     title for the pie chart
-     * @param yValue    set of data for the y axis
+     * @param chart  layout to which the chart should be drawn on
+     * @param title  title for the pie chart
+     * @param yValue set of data for the y axis
      */
     private void createPieChart(PieChart chart, String title, ArrayList<Entry> yValue, ArrayList<String> xValue, String year) {
 
@@ -609,7 +613,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChart.setRotationAngle(10);
         mChart.setRotationEnabled(true);
 
-    //  EaseInExpo
+        //  EaseInExpo
 //        mChart.animateXY(2000, 2000);
         mChart.animateY(2000, Easing.EasingOption.Linear);
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
@@ -631,8 +635,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * This method is used to add data to the charts which are created in createPieChart method.
      *
-     * @param yValue    contains the data for the y axis
-     * @param title     string with the title of the pie chart.
+     * @param yValue contains the data for the y axis
+     * @param title  string with the title of the pie chart.
      */
     private void addDataToChart(ArrayList<Entry> yValue, ArrayList<String> xValue, String title) {
 
@@ -659,5 +663,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChart.invalidate();
 
     }
-    
+
 }

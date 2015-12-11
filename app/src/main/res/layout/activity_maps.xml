@@ -65,7 +65,6 @@
                         android:layout_height="100dp"
                         android:id="@+id/imageCountryFlag"
                         android:layout_alignParentTop="true"
-                        android:onClick="closeButton"
                         android:layout_alignParentStart="true" />
 
                     <TextView
