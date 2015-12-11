@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
@@ -147,6 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ArrayList<String> tempArr = countryList;
         tempArr.add(0, "Select a country");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, tempArr);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinnerCountries.setAdapter(adapter);
         spinnerCountries.setOnItemSelectedListener(new spinnerListener());
 
@@ -436,8 +438,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LinearLayout chart1 = (LinearLayout) findViewById(R.id.chart1Ratio);
 
-
-
         try {
             mChart = (PieChart) findViewById(R.id.mChart1);
             mChart.removeAllViewsInLayout();
@@ -451,13 +451,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 yData.add(new Entry(labour[i], i));
             }
 
-            mChart.removeAllViews();
-            mChart.invalidate();
-            createPieChart(mChart, "Percentage of labour spilt between the labour.", yData, year);
+            ArrayList<String> xValue = new ArrayList<>();
+            xValue.add("Male");
+            xValue.add("Female");
 
-            // adding ratio for each chart in the form of male and female
-            mChart.setNoDataText("");
-            mChart.setNoDataTextDescription("");
+            createPieChart(mChart, "Percentage of labour spilt between the labour.", yData, xValue, year);
+
 
             chart1.removeAllViews();
             addRatio(femaleLabour, maleLabour, chart1);
@@ -481,26 +480,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mChart.removeAllViewsInLayout();
             String femaleEducationPercentage = countries.getCountry(countryName).getEducation(year);
             float femaleEducation = Float.parseFloat(femaleEducationPercentage);
-            float maleEducation = 100 - femaleEducation;
-            float[] education = {maleEducation, femaleEducation};
+            float femaleNotEducation = 100 - femaleEducation;
+            float[] education = {femaleNotEducation, femaleEducation};
 
             ArrayList<Entry> yData = new ArrayList<>();
             for (int i = 0; i < education.length; i++) {
                 yData.add(new Entry(education[i], i));
             }
 
-            mChart.removeAllViews();
-            mChart.invalidate();
-            createPieChart(mChart, "Percentage of labour work force. with tertiary education.", yData, year);
+            ArrayList<String> xValue = new ArrayList<>();
+            xValue.add("Without education");
+            xValue.add("With education");
 
-            mChart.setNoDataText("");
-            mChart.setNoDataTextDescription("");
+            createPieChart(mChart, "Percetange of female in workforce with tertiary education", yData, xValue, year);
 
             chart2.removeAllViews();
-            addRatio(femaleEducation, maleEducation, chart2);
+            for(int i = 0; i < ((int)Math.ceil(femaleEducation)/10); i++) {
+                ImageView image = new ImageView(this);
+                image.setImageResource(getResources().getIdentifier("femaleeducated", "drawable", getPackageName()));
+                chart2.addView(image);
+            }
+            for(int i = 0; i < ((int)Math.ceil(femaleNotEducation)/10); i++) {
+                ImageView image = new ImageView(this);
+                image.setImageResource(getResources().getIdentifier("female", "drawable", getPackageName()));
+                chart2.addView(image);
+            }
+            //addRatio(femaleEducation, femaleNotEducation, chart2);
 
-            mChart.setNoDataText("");
-            mChart.setNoDataTextDescription("");
 
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
@@ -525,17 +531,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 yData.add(new Entry(employment[i], i));
             }
 
-            mChart.removeAllViews();
-            createPieChart(mChart, "Percentage of population under employment.", yData, year);
+            ArrayList<String> xValue = new ArrayList<>();
+            xValue.add("Male");
+            xValue.add("Female");
 
-            mChart.setNoDataText("");
-            mChart.setNoDataTextDescription("");
+            createPieChart(mChart, "Percentage of population under employment.", yData, xValue, year);
 
             chart3.removeAllViews();
             addRatio(femaleEmployment, maleEmployment, chart3);
 
-            mChart.setNoDataText("");
-            mChart.setNoDataTextDescription("");
 
         } catch (NumberFormatException e) {
             mChart.removeAllViews();
@@ -550,7 +554,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void addRatio(float female, float male, LinearLayout chart){
         chart.removeAllViews();
         for(int i = 0; i < ((int)Math.ceil(female)/10); i++) {
-//        for(int i = 0; i < ((int) female/50); i++) {
             ImageView image = new ImageView(this);
             image.setImageResource(getResources().getIdentifier("female", "drawable", getPackageName()));
             chart.addView(image);
@@ -570,7 +573,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param title     title for the pie chart
      * @param yValue    set of data for the y axis
      */
-    private void createPieChart(PieChart chart, String title, ArrayList<Entry> yValue, String year) {
+    private void createPieChart(PieChart chart, String title, ArrayList<Entry> yValue, ArrayList<String> xValue, String year) {
 
         mChart = new PieChart(this);
         chart.addView(mChart);
@@ -598,7 +601,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleColorTransparent(true);
         mChart.setHoleRadius(20);
-        mChart.setHoleColor(Color.rgb(248,248,242));
+        mChart.setHoleColor(Color.rgb(248, 248, 242));
         mChart.setTransparentCircleRadius(5);
 
         mChart.setExtraOffsets(5, 10, 5, 5);
@@ -606,9 +609,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mChart.setRotationAngle(10);
         mChart.setRotationEnabled(true);
 
-
-        mChart.animateXY(2000, 2000);
-
+    //  EaseInExpo
+//        mChart.animateXY(2000, 2000);
+        mChart.animateY(2000, Easing.EasingOption.Linear);
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry entry, int i, Highlight highlight) {
@@ -621,7 +624,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        addDataToChart(yValue, title);
+        addDataToChart(yValue, xValue, title);
 
     }
 
@@ -631,11 +634,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param yValue    contains the data for the y axis
      * @param title     string with the title of the pie chart.
      */
-    private void addDataToChart(ArrayList<Entry> yValue, String title) {
-
-        ArrayList<String> xValue = new ArrayList<>();
-        xValue.add("Male");
-        xValue.add("Female");
+    private void addDataToChart(ArrayList<Entry> yValue, ArrayList<String> xValue, String title) {
 
         PieDataSet dataSet = new PieDataSet(yValue, title);
         dataSet.setSliceSpace(0);
