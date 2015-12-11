@@ -100,8 +100,8 @@ public class JSONparser {
 
             } // End Loop
 
-        } catch (JSONException e) {
-            Log.e("JSONException", "Error: " + e.toString());
+        } catch (JSONException | NullPointerException e) {
+            Log.e("", "Error: " + e.toString());
         }
         String[]  j = t.toArray(new String[t.size()]);
         return j;
