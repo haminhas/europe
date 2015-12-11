@@ -40,8 +40,8 @@ public class JSONparser {
                 temp = id +" "+ name +" "+ capital;
 
             } // End Loop
-        } catch (JSONException e) {
-            Log.e("JSONException", "Error: " + e.toString());
+        } catch (JSONException | NullPointerException e) {
+            Log.e("", "Error: " + e.toString());
         }
         return temp;
     }

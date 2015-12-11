@@ -73,6 +73,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private PieChart mChart;
 
+    public Countries getCountries(){
+        return countries;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -428,7 +432,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param country parameter which is required to update the name of the country and various other widgets
      * @param year    parameter required to show information for a particular year.
      */
-    private void updateInformationLayout(String country, int year) {
+    public void updateInformationLayout(String country, int year) {
 
         textCountryName.setText(country);
         try {
