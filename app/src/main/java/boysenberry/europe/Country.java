@@ -12,7 +12,7 @@ public class Country {
     private String ID;
     private String name;
     private String capital;
-    private ArrayList<String> percentageFemale;// employment to female ratio
+    private ArrayList<String> parliaments;// employment to female ratio
     private ArrayList<String> population; // total population
     private ArrayList<String> femalePopulation; //percetage of feaml population
     private ArrayList<String> education; // labor force with education (& of female labor force)
@@ -23,7 +23,7 @@ public class Country {
         this.ID = ID;
         this.name = name;
         this.capital = capital;
-        percentageFemale = new ArrayList<>();
+        parliaments = new ArrayList<>();
         population = new ArrayList<>();
         femalePopulation = new ArrayList<>();
         education = new ArrayList<>();
@@ -31,8 +31,8 @@ public class Country {
     }
 
 
-    public void addFemalePercentage(String s) {
-        percentageFemale.add(s);
+    public void addparliaments(String s) {
+        parliaments.add(s);
     }
 
     public void addPopulation(String s) {
@@ -67,8 +67,8 @@ public class Country {
     }
 
     // returns employment ratios between female and male
-    public String getPercentageFemale(String year) {
-        return getDataPerYear(year, percentageFemale);
+    public String getparliaments(String year) {
+        return getDataPerYear(year, parliaments);
     }
 
     public String getPopulation(String year) {
@@ -111,7 +111,7 @@ public class Country {
             sb.append(s).append("\r\n");
         for (String s : femalePopulation)
             sb.append(s).append("\r\n");
-        for (String s : percentageFemale)
+        for (String s : parliaments)
             sb.append(s).append("\r\n");
         for (String s : education)
             sb.append(s).append("\r\n");

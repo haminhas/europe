@@ -164,13 +164,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (isNetworkConnected(this)) {
             if (Data.isNull(this.getApplicationContext())) {
                 String country = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR?per_page=100&format=json";
-                String female = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SL.EMP.TOTL.SP.FE.ZS?format=json&date=1990:2013&per_page=10000";
+                String parliaments = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SG.GEN.PARL.ZS?format=json&date=1990:2013&per_page=10000";
                 String population = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SP.POP.TOTL?format=json&date=1990%3A2013&per_page=10000";
                 String fpop = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SP.POP.TOTL.FE.ZS?format=json&date=1990%3A2013&per_page=10000";
                 String education = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SL.TLF.TERT.FE.ZS?format=json&date=1990:2013&per_page=10000";
                 String labour = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SL.TLF.TOTL.FE.ZS?format=json&date=1990:2013&per_page=10000";
 
-                String[] ar = {country, female, population, fpop, education, labour};
+                String[] ar = {country, parliaments, population, fpop, education, labour};
                 Connector con = new Connector();
                 String[] json = new String[6];
                 try {
@@ -455,7 +455,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             xValue.add("Male");
             xValue.add("Female");
 
-            createPieChart(mChart, "Percentage of Females employed (out of all females).", yData, xValue, year);
+            createPieChart(mChart, "Breakdown of gender employment (% out of whole population).", yData, xValue, year);
 
 
             chart1.removeAllViews();
@@ -521,8 +521,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mChart.removeAllViewsInLayout();
             mChart.setNoDataText("");
             mChart.setNoDataTextDescription("");
-            String femaleEmploymentPercentage = countries.getCountry(countryName).getPercentageFemale(year);
-            float femaleEmployment = Float.parseFloat(femaleEmploymentPercentage);
+            String femaleparliaments = countries.getCountry(countryName).getparliaments(year);
+            float femaleEmployment = Float.parseFloat(femaleparliaments);
             float maleEmployment = 100 - femaleEmployment;
             float[] employment = {maleEmployment, femaleEmployment};
 
@@ -535,7 +535,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             xValue.add("Male");
             xValue.add("Female");
 
-            createPieChart(mChart, "Breakdown of gender employment (% out of whole population).", yData, xValue, year);
+            createPieChart(mChart, "Proportion of seats held in Parliament by gender", yData, xValue, year);
 
             chart3.removeAllViews();
             addRatio(femaleEmployment, maleEmployment, chart3);

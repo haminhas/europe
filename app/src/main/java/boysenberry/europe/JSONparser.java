@@ -63,15 +63,20 @@ public class JSONparser {
                 for (Country j : c.getList()) {
                     if (j.getID().equals(id)) {
                         if (number.equals("first")) {
-                            j.addFemalePercentage(temp);
+                            j.addparliaments(temp);
+                            break;
                         } else if (number.equals("second")) {
                             j.addPopulation(temp);
+                            break;
                         } else if (number.equals("third")) {
                             j.addFemalePopulation(temp);
+                            break;
                         } else if (number.equals("fourth")) {
                             j.addEducation(temp);
+                            break;
                         } else if (number.equals("fifth")) {
                             j.addlabour(temp);
+                            break;
 
                         }
                     }

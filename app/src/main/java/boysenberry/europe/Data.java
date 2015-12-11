@@ -111,7 +111,7 @@ public class Data {
                 else if (i < 51)
                     co.addFemalePopulation(lines.get(i));
                 else if (i < 75)
-                    co.addFemalePercentage(lines.get(i));
+                    co.addparliaments(lines.get(i));
                 else if (i < 99)
                     co.addEducation(lines.get(i));
                 else if (i < 123)
