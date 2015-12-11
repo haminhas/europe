@@ -17,6 +17,12 @@ public class JSONparser {
     private Context context;
     private Countries c = new Countries();
 
+    /**
+     * Initialises all the country objects are stores the country name, ID, and Capital city
+     *
+     * @param  s - JSON format string
+     * @return String
+     */
     public String Country(String s) {
         String temp = "";
         try {
@@ -40,6 +46,13 @@ public class JSONparser {
         return temp;
     }
 
+    /**
+     * Adds data to correct country objects
+     *
+     * @param  s - JSON format
+     *         number - used to decide which where the data should be saved
+     * @return String
+     */
     public String[] Data(String s, String number) {
         ArrayList<String> t = new ArrayList<>();
         try {
@@ -60,8 +73,11 @@ public class JSONparser {
 
                 temp = value + "," + date;
                 t.add(temp);
+                //loops through all the countries until it finds the correct country which matches the ID
                 for (Country j : c.getList()) {
                     if (j.getID().equals(id)) {
+                        // then it adds the data to the an array which is the country class based
+                        // on the value that is passed to the method
                         if (number.equals("first")) {
                             j.addparliaments(temp);
                             break;
@@ -95,6 +111,10 @@ public class JSONparser {
         return c;
     }
 
+
+    /**
+     * Saves all the data to local memory
+     */
     public void saveData(Context context){
         this.context = context;
 

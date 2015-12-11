@@ -317,6 +317,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         String flag = country.toLowerCase();
         imageCountryFlag.setImageResource(getResources().getIdentifier(flag, "drawable", getPackageName()));
+        imageCountryFlag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
     }
 
