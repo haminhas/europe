@@ -27,7 +27,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         TextView textCountryName = (TextView) mapsActivity.findViewById(R.id.textCountryName);
 
-        for (int i=0; i<3; i++) {
+        for (int i=0; i<2; i++) {
             String actual = country[i];
             LatLng coordinates = new LatLng(degree1[i], degree2[i]);
             mapsActivity.onMapClick(coordinates);
@@ -44,7 +44,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         final TextView textCountryName = (TextView) mapsActivity.findViewById(R.id.textCountryName);
 
-        for (int i=0; i<3; i++) {
+        for (int i=0; i<2; i++) {
             LatLng coordinates = new LatLng(degree1[i], degree2[i]);
             mapsActivity.onMapClick(coordinates);
 
@@ -89,7 +89,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
         Countries countries;
 
-        for (int i=0; i<3; i++) {
+        for (int i=0; i<2; i++) {
             LatLng coordinates = new LatLng(degree1[i], degree2[i]);
             mapsActivity.onMapClick(coordinates);
 
