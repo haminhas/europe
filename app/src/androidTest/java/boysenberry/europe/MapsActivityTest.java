@@ -1,17 +1,20 @@
 package boysenberry.europe;
 
 
-        import android.test.ActivityInstrumentationTestCase2;
-        import android.test.UiThreadTest;
-        import android.widget.TextView;
+import android.test.ActivityInstrumentationTestCase2;
+import android.test.UiThreadTest;
+import android.util.Log;
+import android.widget.TextView;
+import org.junit.Test;
 
-        import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLng;
 
 public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActivity> {
     public MapsActivityTest() {
         super(MapsActivity.class);
     }
 
+    @Test
     public void testMapsActivityExists(){
         MapsActivity mapsActivity = getActivity();
         assertNotNull(mapsActivity);
@@ -39,7 +42,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
     }
 
     @UiThreadTest
-    public void testgetCountyName(){
+    public void testGetCountryName(){
         MapsActivity mapsActivity = getActivity();
 
         final TextView textCountryName = (TextView) mapsActivity.findViewById(R.id.textCountryName);
@@ -53,34 +56,9 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
 
             countryName = textCountryName.getText().toString();
 
-            assertEquals(country[i], countryName);
+            assertEquals("Country name shown is incorrect.",country[i], countryName);
         }
     }
-
-   /*
-    public void createChartTest(){
-        MapsActivity mapsActivity = getActivity();
-
-        String [] categories = {"Male", "Female"};
-
-        RelativeLayout chart1 = (RelativeLayout)mapsActivity.findViewById(R.id.chart1);
-
-        final TextView textCountryPopulation = (TextView) mapsActivity.findViewById(R.id.textCountryPopulation);
-
-        testActivity.onMapClick(germany);
-
-        String population = textCountryPopulation.getText().toString();
-
-        String femaleLabourPercentage = countries.getCountry("Germany").getLabour("2013");
-        double femaleLabour = Double.parseDouble(femaleLabourPercentage);
-
-        double maleLabour = 100 - femaleLabour;
-        double[] labour = {maleLabour, femaleLabour};
-
-        mapsActivity.createChart(labour,chart1,"");
-
-        assertEquals(,);
-    }*/
 
     @UiThreadTest
     public void testPopulation(){
@@ -103,7 +81,7 @@ public class MapsActivityTest extends ActivityInstrumentationTestCase2<MapsActiv
             String germanPop = mapsActivity.getCountries().getCountry(country[i]).getPopulation("2013");
             String actualGermanPop = textCountryPopulation.getText().toString();
 
-            assertEquals(actualGermanPop, germanPop);
+            assertEquals("The population show isnt't equal to the actual population.",actualGermanPop, germanPop);
         }
     }
 }
