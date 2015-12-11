@@ -158,8 +158,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void checkNetwork() {
+        // first check if there is an internet connection
         if (isNetworkConnected(this)) {
+            //if there is internet connection check whether the data has already been saved
             if (Data.isNull(this.getApplicationContext())) {
+                // if this is the first time the app has been loaded up fetch the data from the World Bank Data set
                 String country = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR?per_page=100&format=json";
                 String parliaments = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SG.GEN.PARL.ZS?format=json&date=1990:2013&per_page=10000";
                 String population = "http://api.worldbank.org/countries/ALB;AND;ARM;AUT;AZE;BLR;BEL;BIH;BGR;HRV;CYP;CZE;DNK;EST;FIN;FRA;GEO;DEU;GRC;HUN;ISL;IRL;ITA;KAZ;KSV;LVA;LIE;LTU;LUX;MKD;MLT;MCO;MDA;MNE;NLD;NOR;POL;PRT;ROU;RUS;SMR;SRB;SVK;SVN;ESP;SWE;CHE;TUR;UKR;GBR/indicators/SP.POP.TOTL?format=json&date=1990%3A2013&per_page=10000";
@@ -171,6 +174,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Connector con = new Connector();
                 String[] json = new String[6];
                 try {
+                    //get the JSON string format from the URL's provided
                     json = con.execute(ar).get();
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
@@ -185,14 +189,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 p.Data(json[4], "fourth");
                 p.Data(json[5], "fifth");
 
+                // Save the data to local memory
                 p.saveData(this.getApplicationContext());
                 countries = p.getCountries();
-                JSONparser p0 = new JSONparser();
 
             } else {
+                // If this is not the first time the app has been loaded and there in an internet connetion
+                // then get the Data from the local storage
                 data();
             }
         } else {
+            // if there is no internet connection then get the data fro the local storage
+            // if there is no data then give a message to connect to the internet
             data();
         }
     }
@@ -205,6 +213,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             layoutInformation.setHorizontalGravity(50);
         } catch (RuntimeException e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Please connect to the internet and try again", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -371,7 +380,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
             } catch (NullPointerException e) {
-                Toast.makeText(getApplicationContext(), "Please connect to the internet and try again", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Please connect to the internet and try again or Re-open the App", Toast.LENGTH_LONG).show();
             }
 
         }
